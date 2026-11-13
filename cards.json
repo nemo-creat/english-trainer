@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-13",
+ "updated": "2026-11-14",
  "cards": [
   {
    "id": "w-software",
@@ -748,6 +748,72 @@
    "ru": "уведомление, оповещение",
    "ex": "An alert shows a problem.",
    "exRu": "Уведомление показывает проблему."
+  },
+  {
+   "id": "w-app",
+   "type": "word",
+   "lesson": "2026-11-14",
+   "en": "app",
+   "ru": "приложение (на телефоне)",
+   "ex": "I like the app.",
+   "exRu": "Мне нравится приложение.",
+   "note": "Для небольшой программы на телефоне чаще говорят app. Software — «программное обеспечение» вообще, например Imabu software."
+  },
+  {
+   "id": "w-impression",
+   "type": "word",
+   "lesson": "2026-11-14",
+   "en": "impression",
+   "ru": "впечатление",
+   "ex": "What is your first impression of the app?",
+   "exRu": "Каково твоё первое впечатление от приложения?"
+  },
+  {
+   "id": "w-convenient",
+   "type": "word",
+   "lesson": "2026-11-14",
+   "en": "convenient",
+   "ru": "удобный",
+   "ex": "I like it because it is convenient.",
+   "exRu": "Мне это нравится, потому что это удобно."
+  },
+  {
+   "id": "p-likeapp",
+   "type": "phrase",
+   "lesson": "2026-11-14",
+   "en": "I like the app.",
+   "ru": "Мне нравится приложение."
+  },
+  {
+   "id": "p-firstimpression",
+   "type": "phrase",
+   "lesson": "2026-11-14",
+   "en": "What is your first impression of the app?",
+   "ru": "Каково твоё первое впечатление от приложения?"
+  },
+  {
+   "id": "p-whylike",
+   "type": "phrase",
+   "lesson": "2026-11-14",
+   "en": "Why do you like the app?",
+   "ru": "Почему тебе нравится приложение?"
+  },
+  {
+   "id": "c-convenient",
+   "type": "cloze",
+   "lesson": "2026-11-14",
+   "text": "I like it ___ it is convenient.",
+   "answer": "because",
+   "hint": "",
+   "ru": "Мне это нравится, потому что это удобно."
+  },
+  {
+   "id": "r-appsoftware",
+   "type": "rule",
+   "lesson": "2026-11-14",
+   "front": "app или software?",
+   "back": "app — приложение на телефоне; software — программное обеспечение вообще",
+   "note": "I like the app. (маленькое приложение)\nImabu software. (программа / ПО)"
   }
  ]
 }
