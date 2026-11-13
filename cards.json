@@ -1,0 +1,753 @@
+{
+ "version": 1,
+ "updated": "2026-11-13",
+ "cards": [
+  {
+   "id": "w-software",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "software",
+   "ru": "программа, программное обеспечение",
+   "ex": "My software helps sellers.",
+   "exRu": "Моя программа помогает продавцам.",
+   "note": "Пишется software: soft + ware, без лишней «e» на конце."
+  },
+  {
+   "id": "p-nicetomeet",
+   "type": "phrase",
+   "lesson": "2026-11-12",
+   "en": "Nice to meet you too.",
+   "ru": "Мне тоже приятно познакомиться.",
+   "note": "See you = «до встречи», это при прощании. При знакомстве: Nice to meet you."
+  },
+  {
+   "id": "c-shows",
+   "type": "cloze",
+   "lesson": "2026-11-12",
+   "text": "My software ___ sales.",
+   "answer": "shows",
+   "hint": "(show)",
+   "ru": "Моя программа показывает продажи.",
+   "note": "software = it, поэтому глагол с -s."
+  },
+  {
+   "id": "r-ing",
+   "type": "rule",
+   "lesson": "2026-11-12",
+   "front": "Как сказать «делаю прямо сейчас»?",
+   "back": "I'm + глагол-ing",
+   "note": "I'm working. I'm coding. I'm fishing."
+  },
+  {
+   "id": "w-seller",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "seller",
+   "ru": "продавец",
+   "ex": "A seller checks sales every day.",
+   "exRu": "Продавец проверяет продажи каждый день."
+  },
+  {
+   "id": "p-workingnow",
+   "type": "phrase",
+   "lesson": "2026-11-12",
+   "en": "I'm working on Imabu software right now.",
+   "ru": "Я сейчас работаю над программой Imabu.",
+   "note": "I'm + глагол-ing = делаю прямо сейчас.",
+   "alts": [
+    "I am working on Imabu software right now."
+   ]
+  },
+  {
+   "id": "c-helps",
+   "type": "cloze",
+   "lesson": "2026-11-12",
+   "text": "My software ___ sellers.",
+   "answer": "helps",
+   "hint": "(help)",
+   "ru": "Моя программа помогает продавцам."
+  },
+  {
+   "id": "r-s",
+   "type": "rule",
+   "lesson": "2026-11-12",
+   "front": "he / she / it / software + глагол: что добавляем?",
+   "back": "-s на конце глагола",
+   "note": "My software shows. It helps. She works.\nС I / you / we / they без -s: I use, they use."
+  },
+  {
+   "id": "w-sales",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "sales",
+   "ru": "продажи",
+   "ex": "My software shows sales.",
+   "exRu": "Моя программа показывает продажи."
+  },
+  {
+   "id": "p-helpssellers",
+   "type": "phrase",
+   "lesson": "2026-11-12",
+   "en": "My software helps sellers on Wildberries and Ozon.",
+   "ru": "Моя программа помогает продавцам на Wildberries и Ozon."
+  },
+  {
+   "id": "c-uses",
+   "type": "cloze",
+   "lesson": "2026-11-12",
+   "text": "She ___ it every day.",
+   "answer": "uses",
+   "hint": "(use)",
+   "ru": "Она пользуется этим каждый день.",
+   "note": "he / she / it + глагол-s. С I / you / we / they без -s."
+  },
+  {
+   "id": "r-the",
+   "type": "rule",
+   "lesson": "2026-11-12",
+   "front": "Когда нужен the?",
+   "back": "Когда речь о конкретных данных, которые мы оба знаем",
+   "note": "I check all the statistics. (конкретные)\nI like statistics. (вообще)"
+  },
+  {
+   "id": "w-profit",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "profit",
+   "ru": "прибыль",
+   "ex": "It shows sales and profit.",
+   "exRu": "Она показывает продажи и прибыль."
+  },
+  {
+   "id": "p-showsall",
+   "type": "phrase",
+   "lesson": "2026-11-12",
+   "en": "My software shows all of this.",
+   "ru": "Моя программа показывает всё это.",
+   "note": "Не make, а show: «показывает». И software + глагол-s: shows."
+  },
+  {
+   "id": "c-working",
+   "type": "cloze",
+   "lesson": "2026-11-12",
+   "text": "I'm ___ on Imabu right now.",
+   "answer": "working",
+   "hint": "(work)",
+   "ru": "Я сейчас работаю над Imabu.",
+   "note": "I'm + глагол-ing."
+  },
+  {
+   "id": "r-seeyou",
+   "type": "rule",
+   "lesson": "2026-11-12",
+   "front": "See you или Nice to meet you?",
+   "back": "Nice to meet you = приятно познакомиться; See you = до встречи",
+   "note": "See you говорят при прощании."
+  },
+  {
+   "id": "w-ads",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "ads",
+   "ru": "реклама",
+   "ex": "I check ads every day.",
+   "exRu": "Я проверяю рекламу каждый день.",
+   "alts": [
+    "advertising"
+   ]
+  },
+  {
+   "id": "p-useeveryday",
+   "type": "phrase",
+   "lesson": "2026-11-12",
+   "en": "I use it every day.",
+   "ru": "Я пользуюсь этим каждый день.",
+   "note": "Короче: I use it daily.",
+   "alts": [
+    "I use it daily."
+   ]
+  },
+  {
+   "id": "c-thestats",
+   "type": "cloze",
+   "lesson": "2026-11-12",
+   "text": "When sales go down, I check all ___ statistics.",
+   "answer": "the",
+   "hint": "",
+   "ru": "Когда продажи падают, я проверяю всю статистику."
+  },
+  {
+   "id": "w-stock",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "stock",
+   "ru": "остатки на складе",
+   "ex": "I check stock every morning.",
+   "exRu": "Я проверяю остатки каждое утро."
+  },
+  {
+   "id": "p-icheck",
+   "type": "phrase",
+   "lesson": "2026-11-12",
+   "en": "I check sales, stock, logistics, and ad spend.",
+   "ru": "Я проверяю продажи, остатки, логистику и расходы на рекламу.",
+   "note": "Перед последним пунктом списка ставим and."
+  },
+  {
+   "id": "c-toomeet",
+   "type": "cloze",
+   "lesson": "2026-11-12",
+   "text": "Nice to meet you ___.",
+   "answer": "too",
+   "hint": "",
+   "ru": "Мне тоже приятно познакомиться.",
+   "note": "See you = до встречи (при прощании)."
+  },
+  {
+   "id": "w-show",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "to show",
+   "ru": "показывать",
+   "ex": "My software shows all of this.",
+   "exRu": "Моя программа показывает всё это.",
+   "note": "software / it / he / she + глагол-s: shows.",
+   "alts": [
+    "show"
+   ]
+  },
+  {
+   "id": "p-whensalesdown",
+   "type": "phrase",
+   "lesson": "2026-11-12",
+   "en": "When sales go down, I check all the statistics.",
+   "ru": "Когда продажи падают, я проверяю всю статистику.",
+   "note": "all the + statistics: перед конкретными данными нужен the."
+  },
+  {
+   "id": "c-and",
+   "type": "cloze",
+   "lesson": "2026-11-12",
+   "text": "I check sales, stock, logistics, ___ ad spend.",
+   "answer": "and",
+   "hint": "",
+   "ru": "Я проверяю продажи, остатки, логистику и расходы на рекламу."
+  },
+  {
+   "id": "w-help",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "to help",
+   "ru": "помогать",
+   "ex": "My software helps sellers.",
+   "exRu": "Моя программа помогает продавцам.",
+   "note": "После help второй глагол без изменений: helps sellers work.",
+   "alts": [
+    "help"
+   ]
+  },
+  {
+   "id": "p-whatdoessoft",
+   "type": "phrase",
+   "lesson": "2026-11-12",
+   "en": "What does your software do?",
+   "ru": "Что делает твоя программа?",
+   "note": "После does глагол без -s: What does it do?"
+  },
+  {
+   "id": "c-does",
+   "type": "cloze",
+   "lesson": "2026-11-12",
+   "text": "What ___ your software do?",
+   "answer": "does",
+   "hint": "",
+   "ru": "Что делает твоя программа?"
+  },
+  {
+   "id": "w-check",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "to check",
+   "ru": "проверять",
+   "ex": "I check sales first.",
+   "exRu": "Сначала я проверяю продажи.",
+   "alts": [
+    "check"
+   ]
+  },
+  {
+   "id": "p-firstthingq",
+   "type": "phrase",
+   "lesson": "2026-11-12",
+   "en": "What is the first thing you check in the morning?",
+   "ru": "Что ты проверяешь первым делом утром?"
+  },
+  {
+   "id": "w-logistics",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "logistics",
+   "ru": "логистика",
+   "ex": "I check logistics.",
+   "exRu": "Я проверяю логистику."
+  },
+  {
+   "id": "p-whatwhendown",
+   "type": "phrase",
+   "lesson": "2026-11-12",
+   "en": "What do you do when sales go down?",
+   "ru": "Что ты делаешь, когда продажи падают?"
+  },
+  {
+   "id": "w-adspend",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "ad spend",
+   "ru": "расходы на рекламу",
+   "ex": "I check ad spend every day.",
+   "exRu": "Я проверяю расходы на рекламу каждый день.",
+   "alts": [
+    "ad costs",
+    "advertising costs"
+   ]
+  },
+  {
+   "id": "p-reasonprice",
+   "type": "phrase",
+   "lesson": "2026-11-12",
+   "en": "Sometimes the reason is a high price.",
+   "ru": "Иногда причина в высокой цене."
+  },
+  {
+   "id": "w-firstthing",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "the first thing",
+   "ru": "первым делом, в первую очередь",
+   "ex": "What is the first thing you check?",
+   "exRu": "Что ты проверяешь первым делом?"
+  },
+  {
+   "id": "w-statistics",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "statistics",
+   "ru": "статистика",
+   "ex": "I check all the statistics.",
+   "exRu": "Я проверяю всю статистику.",
+   "note": "Коротко: stats.",
+   "alts": [
+    "stats"
+   ]
+  },
+  {
+   "id": "w-report",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "report",
+   "ru": "отчёт",
+   "ex": "I check all the reports.",
+   "exRu": "Я проверяю все отчёты."
+  },
+  {
+   "id": "w-daily",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "daily",
+   "ru": "ежедневно",
+   "ex": "I use it daily.",
+   "exRu": "Я пользуюсь этим ежедневно.",
+   "note": "Короче, чем every day."
+  },
+  {
+   "id": "w-godown",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "to go down",
+   "ru": "падать, снижаться",
+   "ex": "Sales go down.",
+   "exRu": "Продажи падают.",
+   "alts": [
+    "go down"
+   ]
+  },
+  {
+   "id": "w-goup",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "to go up",
+   "ru": "расти, повышаться",
+   "ex": "Prices go up.",
+   "exRu": "Цены растут.",
+   "alts": [
+    "go up"
+   ]
+  },
+  {
+   "id": "w-reason",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "reason",
+   "ru": "причина",
+   "ex": "Sometimes the reason is a high price.",
+   "exRu": "Иногда причина — высокая цена."
+  },
+  {
+   "id": "w-competitors",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "competitors",
+   "ru": "конкуренты",
+   "ex": "I check my competitors.",
+   "exRu": "Я проверяю своих конкурентов."
+  },
+  {
+   "id": "w-highprice",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "high price",
+   "ru": "высокая цена",
+   "ex": "Sometimes the reason is a high price.",
+   "exRu": "Иногда причина — высокая цена."
+  },
+  {
+   "id": "w-badreviews",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "bad reviews",
+   "ru": "плохие отзывы",
+   "ex": "Bad reviews can lower sales.",
+   "exRu": "Плохие отзывы могут снизить продажи."
+  },
+  {
+   "id": "w-nostock",
+   "type": "word",
+   "lesson": "2026-11-12",
+   "en": "no stock",
+   "ru": "нет остатков (товара нет в наличии)",
+   "ex": "No stock means no sales.",
+   "exRu": "Нет остатков — нет продаж."
+  },
+  {
+   "id": "w-bug",
+   "type": "word",
+   "lesson": "2026-11-13",
+   "en": "bug",
+   "ru": "баг, ошибка в программе",
+   "ex": "Today I fixed small bugs.",
+   "exRu": "Сегодня я исправил небольшие баги.",
+   "note": "bug (баг) ≠ bag (сумка). Произносится «баг», а не «бэг»."
+  },
+  {
+   "id": "p-whatdoyoudo",
+   "type": "phrase",
+   "lesson": "2026-11-13",
+   "en": "What do you do?",
+   "ru": "Чем ты занимаешься? (о работе)"
+  },
+  {
+   "id": "c-fixed",
+   "type": "cloze",
+   "lesson": "2026-11-13",
+   "text": "Today I ___ small bugs.",
+   "answer": "fixed",
+   "hint": "(fix)",
+   "ru": "Сегодня я исправил небольшие баги.",
+   "note": "Прошедшее время: +ed."
+  },
+  {
+   "id": "r-ed",
+   "type": "rule",
+   "lesson": "2026-11-13",
+   "front": "Как сказать «делал, уже сделал»?",
+   "back": "глагол + -ed",
+   "note": "work → worked, fix → fixed, check → checked, add → added.\nЕсть и особые глаголы (go → went), их разберём позже."
+  },
+  {
+   "id": "w-mistake",
+   "type": "word",
+   "lesson": "2026-11-13",
+   "en": "mistake",
+   "ru": "ошибка",
+   "ex": "I fixed small mistakes.",
+   "exRu": "Я исправил небольшие ошибки."
+  },
+  {
+   "id": "p-howwasday",
+   "type": "phrase",
+   "lesson": "2026-11-13",
+   "en": "How was your day today?",
+   "ru": "Как прошёл твой день сегодня?"
+  },
+  {
+   "id": "c-worked",
+   "type": "cloze",
+   "lesson": "2026-11-13",
+   "text": "Today I ___ on Imabu.",
+   "answer": "worked",
+   "hint": "(work)",
+   "ru": "Сегодня я работал над Imabu."
+  },
+  {
+   "id": "r-capi",
+   "type": "rule",
+   "lesson": "2026-11-13",
+   "front": "Как пишется «я» в английском?",
+   "back": "I, всегда с большой буквы",
+   "note": "Даже в середине предложения: Today I fixed bugs."
+  },
+  {
+   "id": "w-small",
+   "type": "word",
+   "lesson": "2026-11-13",
+   "en": "small",
+   "ru": "маленький, небольшой",
+   "ex": "I fixed small bugs.",
+   "exRu": "Я исправил небольшие баги."
+  },
+  {
+   "id": "p-dayWasNormal",
+   "type": "phrase",
+   "lesson": "2026-11-13",
+   "en": "My day was normal.",
+   "ru": "Мой день был обычным.",
+   "note": "Вечер, день уже прошёл: was, а не is."
+  },
+  {
+   "id": "c-was",
+   "type": "cloze",
+   "lesson": "2026-11-13",
+   "text": "My day ___ normal.",
+   "answer": "was",
+   "hint": "(is → прошлое)",
+   "ru": "Мой день был обычным."
+  },
+  {
+   "id": "r-cooler",
+   "type": "rule",
+   "lesson": "2026-11-13",
+   "front": "Как сделать сравнение: cool → ?",
+   "back": "cooler (короткие слова + -er)",
+   "note": "fast → faster, big → bigger.\nДлинные слова: more beautiful, more interesting.\nОсобое: good → better."
+  },
+  {
+   "id": "w-fix",
+   "type": "word",
+   "lesson": "2026-11-13",
+   "en": "to fix",
+   "ru": "исправлять, чинить",
+   "ex": "Today I fixed small bugs.",
+   "exRu": "Сегодня я исправил небольшие баги.",
+   "note": "Прошедшее время: fixed (+ed).",
+   "alts": [
+    "fix"
+   ]
+  },
+  {
+   "id": "p-todayworked",
+   "type": "phrase",
+   "lesson": "2026-11-13",
+   "en": "Today I worked on Imabu.",
+   "ru": "Сегодня я работал над Imabu.",
+   "note": "Прошедшее время: work → worked (+ed)."
+  },
+  {
+   "id": "c-because",
+   "type": "cloze",
+   "lesson": "2026-11-13",
+   "text": "I like it ___ it makes the software cooler.",
+   "answer": "because",
+   "hint": "",
+   "ru": "Мне это нравится, потому что программа становится круче."
+  },
+  {
+   "id": "r-likeing",
+   "type": "rule",
+   "lesson": "2026-11-13",
+   "front": "Какая форма глагола после like?",
+   "back": "глагол + -ing",
+   "note": "I like fishing. I like coding. I like making software."
+  },
+  {
+   "id": "w-intheend",
+   "type": "word",
+   "lesson": "2026-11-13",
+   "en": "in the end",
+   "ru": "в итоге, в конце концов",
+   "ex": "In the end, this program will be beautiful.",
+   "exRu": "В итоге эта программа будет красивой."
+  },
+  {
+   "id": "p-intheendbeautiful",
+   "type": "phrase",
+   "lesson": "2026-11-13",
+   "en": "In the end, this program will be beautiful.",
+   "ru": "В итоге эта программа будет красивой.",
+   "note": "will be = будет."
+  },
+  {
+   "id": "c-cooler",
+   "type": "cloze",
+   "lesson": "2026-11-13",
+   "text": "This program is cool. That program is ___.",
+   "answer": "cooler",
+   "hint": "(cool)",
+   "ru": "Эта программа крутая. Та программа круче.",
+   "note": "Короткие прилагательные: +er."
+  },
+  {
+   "id": "r-bugbag",
+   "type": "rule",
+   "lesson": "2026-11-13",
+   "front": "bug или bag?",
+   "back": "bug = баг (ошибка в коде), bag = сумка",
+   "note": "Today I fixed small bugs. (баги)\nI have a bag. (сумка)"
+  },
+  {
+   "id": "w-because",
+   "type": "word",
+   "lesson": "2026-11-13",
+   "en": "because",
+   "ru": "потому что",
+   "ex": "I like it because it is interesting.",
+   "exRu": "Мне это нравится, потому что это интересно."
+  },
+  {
+   "id": "p-fixedbugs",
+   "type": "phrase",
+   "lesson": "2026-11-13",
+   "en": "Today I fixed small bugs.",
+   "ru": "Сегодня я исправил небольшие баги.",
+   "note": "bug (баг) ≠ bag (сумка)."
+  },
+  {
+   "id": "c-better",
+   "type": "cloze",
+   "lesson": "2026-11-13",
+   "text": "I like making software ___.",
+   "answer": "better",
+   "hint": "(good)",
+   "ru": "Мне нравится делать программу лучше.",
+   "note": "good → better."
+  },
+  {
+   "id": "r-because",
+   "type": "rule",
+   "lesson": "2026-11-13",
+   "front": "Как объяснить причину?",
+   "back": "because + предложение",
+   "note": "I like it because it makes the software cooler."
+  },
+  {
+   "id": "w-beautiful",
+   "type": "word",
+   "lesson": "2026-11-13",
+   "en": "beautiful",
+   "ru": "красивый",
+   "ex": "This program is beautiful.",
+   "exRu": "Эта программа красивая.",
+   "note": "Пишется beautiful (с одним l на конце). Сравнительная степень: more beautiful."
+  },
+  {
+   "id": "p-likecooler",
+   "type": "phrase",
+   "lesson": "2026-11-13",
+   "en": "I like it because it makes the software cooler.",
+   "ru": "Мне это нравится, потому что программа становится круче.",
+   "note": "because + предложение; it makes (с -s). cool → cooler."
+  },
+  {
+   "id": "c-making",
+   "type": "cloze",
+   "lesson": "2026-11-13",
+   "text": "I like ___ software.",
+   "answer": "making",
+   "hint": "(make)",
+   "ru": "Мне нравится создавать программы.",
+   "note": "После like: глагол + ing."
+  },
+  {
+   "id": "w-better",
+   "type": "word",
+   "lesson": "2026-11-13",
+   "en": "better",
+   "ru": "лучше",
+   "ex": "I like making software better.",
+   "exRu": "Мне нравится делать программу лучше.",
+   "note": "good → better (особое слово, запомнить)."
+  },
+  {
+   "id": "p-likemaking",
+   "type": "phrase",
+   "lesson": "2026-11-13",
+   "en": "I like making software better.",
+   "ru": "Мне нравится делать программу лучше.",
+   "note": "После like глагол с -ing: I like making."
+  },
+  {
+   "id": "c-intheend",
+   "type": "cloze",
+   "lesson": "2026-11-13",
+   "text": "___ the end, this program will be beautiful.",
+   "answer": "in",
+   "hint": "",
+   "ru": "В итоге эта программа будет красивой."
+  },
+  {
+   "id": "w-cooler",
+   "type": "word",
+   "lesson": "2026-11-13",
+   "en": "cooler",
+   "ru": "круче",
+   "ex": "I like making software cooler.",
+   "exRu": "Мне нравится делать программу круче.",
+   "note": "cool → cooler (+er у коротких прилагательных)."
+  },
+  {
+   "id": "p-wantchart",
+   "type": "phrase",
+   "lesson": "2026-11-13",
+   "en": "I want to add a new chart.",
+   "ru": "Я хочу добавить новый график."
+  },
+  {
+   "id": "w-add",
+   "type": "word",
+   "lesson": "2026-11-13",
+   "en": "to add",
+   "ru": "добавлять",
+   "ex": "I want to add a new chart.",
+   "exRu": "Я хочу добавить новый график.",
+   "alts": [
+    "add"
+   ]
+  },
+  {
+   "id": "w-feature",
+   "type": "word",
+   "lesson": "2026-11-13",
+   "en": "feature",
+   "ru": "функция, возможность (в программе)",
+   "ex": "I want to add a new feature.",
+   "exRu": "Я хочу добавить новую функцию."
+  },
+  {
+   "id": "w-chart",
+   "type": "word",
+   "lesson": "2026-11-13",
+   "en": "chart",
+   "ru": "график, диаграмма",
+   "ex": "I want to add a new chart.",
+   "exRu": "Я хочу добавить новый график."
+  },
+  {
+   "id": "w-alert",
+   "type": "word",
+   "lesson": "2026-11-13",
+   "en": "alert",
+   "ru": "уведомление, оповещение",
+   "ex": "An alert shows a problem.",
+   "exRu": "Уведомление показывает проблему."
+  }
+ ]
+}
