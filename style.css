@@ -150,3 +150,9 @@ label.field { display: block; margin: 14px 0 6px; font-weight: 600; }
 .btn.pair.sel { border-color: var(--accent); background: #1b4560; }
 .btn.pair.done { opacity: 0.3; pointer-events: none; background: #1f6b4d; }
 .btn.pair.flash { background: #7a2e2e; border-color: var(--bad); }
+
+/* диагностика ошибок */
+.diag { margin-top: 12px; padding: 10px 12px; background: #2b2230; border-left: 3px solid var(--bad); border-radius: 8px; }
+.diag-h { font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--bad); margin-bottom: 4px; font-weight: 700; }
+.diag-i { font-size: 16px; margin: 2px 0; }
+.wchip { display: inline-block; margin: 0 6px 6px 0; padding: 4px 10px; font-size: 14px; color: var(--text); }

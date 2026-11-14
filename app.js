@@ -127,7 +127,8 @@
       days: (s && s.days) || {},
       extra: (s && s.extra) || {},
       drills: (s && s.drills) || {},   // прогресс упражнений по правилам: id -> {ok, bad, last}
-      train: (s && s.train) || {}      // прогресс тренажёров слов: id -> {ok, bad, last}
+      train: (s && s.train) || {},     // прогресс тренажёров слов: id -> {ok, bad, last}
+      weak: (s && s.weak) || {}        // слабые места: 'r:<глава>' или 'w:<слово>' -> {k, ch, w, bad, ok, last, ex}
     };
   }
 
@@ -192,9 +193,187 @@
     return res;
   }
 
+  /* ---------- диагностика ошибок: слово или правило ---------- */
+  var SETS = {
+    be: ['am', 'is', 'are', 'was', 'were', 'be', 'been'],
+    aux: ['do', 'does', 'did'],
+    art: ['a', 'an', 'the'],
+    prep: ['in', 'on', 'at', 'for', 'as', 'of', 'with', 'by', 'from', 'about'],
+    cmp: ['more', 'most', 'than'],
+    conj: ['and', 'because', 'when', 'but', 'or', 'to'],
+    will: ['will']
+  };
+  function setOf(w) {
+    for (var k in SETS) if (SETS[k].indexOf(w) !== -1) return k;
+    return null;
+  }
+
+  function expand(s) {
+    var t = norm(s);
+    t = t.replace(/\bwon't\b/g, 'will not').replace(/\bcan't\b/g, 'can not')
+      .replace(/\b(\w+)n't\b/g, '$1 not')
+      .replace(/\bi'm\b/g, 'i am').replace(/\b(\w+)'re\b/g, '$1 are').replace(/\b(\w+)'ll\b/g, '$1 will')
+      .replace(/\b(he|she|it|that|there|what)'s\b/g, '$1 is').replace(/\b(\w+)'ve\b/g, '$1 have');
+    return t.split(' ').filter(Boolean);
+  }
+
+  function stem(w) {
+    var s = w;
+    if (s.length > 4 && /(ies|ied)$/.test(s)) s = s.slice(0, -3) + 'y';
+    else s = s.replace(/(ing|est|er|ed|es|s|d)$/, '');
+    if (s.length >= 3 && /(.)\1$/.test(s)) s = s.slice(0, -1);
+    return s.replace(/e$/, '');
+  }
+  function suffixKind(w) {
+    if (/ing$/.test(w)) return 'ing';
+    if (/ed$/.test(w)) return 'ed';
+    if (/(est|er)$/.test(w)) return 'er';
+    if (/(ies|es|s)$/.test(w)) return 's';
+    return '';
+  }
+  function sameStem(a, b) { return a !== b && a.length >= 3 && b.length >= 3 && stem(a) === stem(b); }
+
+  var INFL = {
+    s: [2, 'окончание -s: нужно с he / she / it и для нескольких предметов'],
+    ed: [4, 'прошедшее время: глагол + -ed'],
+    ing: [3, 'форма -ing: am / is / are + глагол-ing'],
+    er: [9, 'сравнение: короткое слово + -er, длинное: more + слово']
+  };
+  var CTX_AFTER = { do: [6, 'после do / does глагол без окончаний'], does: [6, 'после do / does глагол без окончаний'],
+    did: [6, 'после did глагол в обычной форме'], will: [5, 'после will глагол без окончаний'],
+    to: [10, 'после to глагол без окончаний'] };
+
+  function pairIssue(g, w, prevW, known, auxCtx) {
+    if (sameStem(g, w)) {
+      var kw = suffixKind(w), kg = suffixKind(g);
+      var ctxw = prevW === 'to' ? 'to' : auxCtx;
+      if (!kw && ctxw && CTX_AFTER[ctxw]) return { t: 'rule', ch: CTX_AFTER[ctxw][0], note: CTX_AFTER[ctxw][1], got: g, want: w };
+      var k = kw || kg;
+      if (k && INFL[k]) return { t: 'rule', ch: INFL[k][0], note: INFL[k][1], got: g, want: w };
+    }
+    var sg = setOf(g), sw = setOf(w);
+    if (sg && sw && (sg === sw || (sg === 'conj' || sw === 'conj'))) return fnIssue(sw, w, g);
+    if (sg && sw) return fnIssue(sw, w, g);
+    var maxLen = Math.max(g.length, w.length);
+    if (Math.min(g.length, w.length) >= 3 && lev(g, w) <= (maxLen >= 7 ? 2 : 1)) {
+      return known && known[g] ? { t: 'word', got: g, want: w } : { t: 'spell', got: g, want: w };
+    }
+    return { t: 'word', got: g, want: w };
+  }
+
+  // ошибка со служебным словом (артикль, предлог, am/is/are, do/does/did, will, and/because/to)
+  function fnIssue(set, w, g, ctx) {
+    var x = w || g;
+    if (set === 'be') {
+      if (/^(was|were)$/.test(x) || /^(was|were)$/.test(g || '')) return { t: 'rule', ch: 4, note: 'прошедшее время от «быть»: was / were', got: g || '', want: w || '' };
+      if (ctx === 'ing') return { t: 'rule', ch: 3, note: 'перед -ing нужен am / is / are; с простым глаголом он не нужен', got: g || '', want: w || '' };
+      return { t: 'rule', ch: 1, note: 'глагол «быть»: am / is / are', got: g || '', want: w || '' };
+    }
+    if (set === 'aux') return { t: 'rule', ch: 6, note: 'do / does / did в вопросах и отрицании', got: g || '', want: w || '' };
+    if (set === 'art') return { t: 'rule', ch: 8, note: 'артикли a / an / the', got: g || '', want: w || '' };
+    if (set === 'prep') return { t: 'rule', ch: 11, note: 'предлог', got: g || '', want: w || '' };
+    if (set === 'cmp') return { t: 'rule', ch: 9, note: 'сравнение прилагательных', got: g || '', want: w || '' };
+    if (set === 'will') return { t: 'rule', ch: 5, note: 'будущее: will + глагол', got: g || '', want: w || '' };
+    return { t: 'rule', ch: 10, note: 'связки: and / because / when / to', got: g || '', want: w || '' };
+  }
+
+  // Разбор ответа по словам. Возвращает {issues:[{t:'rule'|'spell'|'word', ch?, note?, got, want}], target}
+  function diagnose(given, targets, known) {
+    var g = expand(given), best = null;
+    targets.forEach(function (t) {
+      var w = expand(t);
+      var ops = alignOps(g, w);
+      if (!best || ops.cost < best.cost) best = { cost: ops.cost, ops: ops.list, target: t, w: w };
+    });
+    if (!best) return { issues: [], target: '' };
+    var issues = [];
+    var auxCtx = best.w.filter(function (x) { return x === 'do' || x === 'does' || x === 'did' || x === 'will'; })[0] || '';
+    var sortedEq = g.slice().sort().join(' ') === best.w.slice().sort().join(' ');
+    if (sortedEq && g.join(' ') !== best.w.join(' ')) {
+      return { issues: [{ t: 'rule', ch: 1, note: 'порядок слов: кто → что делает → что', got: g.join(' '), want: best.w.join(' ') }], target: best.target };
+    }
+    best.ops.forEach(function (o) {
+      if (o.op === 's') issues.push(pairIssue(o.g, o.w, o.pw, known, auxCtx));
+      else if (o.op === 'i') { // лишнее слово в ответе
+        var s = setOf(o.g);
+        if (s === 'be' && o.g === 'am') issues.push({ t: 'rule', ch: 3, note: 'I\'m + простой глагол — ошибка: для привычки просто I + глагол', got: o.g, want: '' });
+        else if (s === 'be' && !/^(was|were)$/.test(o.g)) issues.push({ t: 'rule', ch: 1, note: 'лишний is / are: два глагола подряд ставить нельзя', got: o.g, want: '' });
+        else if (s) issues.push(fnIssue(s, '', o.g, ''));
+        else issues.push({ t: 'word', got: o.g, want: '', note: 'лишнее слово «' + o.g + '»' });
+      } else if (o.op === 'd') { // слово пропущено
+        var s2 = setOf(o.w);
+        if (s2) issues.push(fnIssue(s2, o.w, '', /ing$/.test(o.nw || '') ? 'ing' : ''));
+        else issues.push({ t: 'word', got: '', want: o.w, note: 'пропущено слово «' + o.w + '»' });
+      }
+    });
+    return { issues: issues, target: best.target };
+  }
+
+  function alignOps(g, w) {
+    var n = g.length, m = w.length, D = [], i, j;
+    function sub(a, b) {
+      if (a === b) return 0;
+      if (sameStem(a, b) || lev(a, b) <= Math.max(1, Math.floor(Math.max(a.length, b.length) / 4))) return 0.4;
+      var sa = setOf(a);
+      if (sa && sa === setOf(b)) return 0.6;
+      return 1.6;
+    }
+    for (i = 0; i <= n; i++) { D[i] = []; for (j = 0; j <= m; j++) D[i][j] = 0; }
+    for (i = 1; i <= n; i++) D[i][0] = i;
+    for (j = 1; j <= m; j++) D[0][j] = j;
+    for (i = 1; i <= n; i++) for (j = 1; j <= m; j++) {
+      D[i][j] = Math.min(D[i - 1][j - 1] + sub(g[i - 1], w[j - 1]), D[i - 1][j] + 1, D[i][j - 1] + 1);
+    }
+    var list = [];
+    i = n; j = m;
+    while (i > 0 || j > 0) {
+      if (i > 0 && j > 0 && Math.abs(D[i][j] - (D[i - 1][j - 1] + sub(g[i - 1], w[j - 1]))) < 1e-9) {
+        if (g[i - 1] !== w[j - 1]) list.push({ op: 's', g: g[i - 1], w: w[j - 1], pw: w[j - 2] || '', nw: w[j] || '' });
+        i--; j--;
+      } else if (i > 0 && Math.abs(D[i][j] - (D[i - 1][j] + 1)) < 1e-9) {
+        list.push({ op: 'i', g: g[i - 1], nw: g[i] || '' }); i--;
+      } else {
+        list.push({ op: 'd', w: w[j - 1], nw: w[j] || '' }); j--;
+      }
+    }
+    list.reverse();
+    return { cost: D[n][m], list: list };
+  }
+
+  // ключ «слабого места»: правило по главе или слово
+  function issueKey(is) {
+    if (is.t === 'rule') return 'r:' + is.ch;
+    var w = (is.want || '').toLowerCase();
+    return w ? 'w:' + w : null;
+  }
+  function weakScore(e) { return e.bad * 2 - e.ok; }
+  function noteIssuesTo(weak, issues, day) {
+    var done = {};
+    (issues || []).forEach(function (is) {
+      var key = issueKey(is);
+      if (!key) return;
+      if (done[key]) return;
+      done[key] = 1;
+      var e = weak[key] || (weak[key] = { k: is.t === 'rule' ? 'r' : 'w', ch: is.ch, w: is.t === 'rule' ? undefined : is.want, bad: 0, ok: 0, last: day, ex: [] });
+      e.bad++; e.last = day;
+      var ex = is.got || is.want ? { got: is.got || '', want: is.want || '', t: is.t } : null;
+      if (ex) { e.ex.push(ex); if (e.ex.length > 3) e.ex.shift(); }
+    });
+  }
+  function noteOkTo(weak, key) {
+    var e = weak[key];
+    if (e) e.ok = Math.min(e.ok + 1, e.bad * 2); // счёт не уходит ниже нуля: новая ошибка сразу вернёт тему в слабые
+  }
+  function weakList(weak) {
+    return Object.keys(weak || {}).map(function (k) { var e = weak[k]; return { key: k, e: e, score: weakScore(e) }; })
+      .filter(function (x) { return x.score > 0; })
+      .sort(function (a, b) { return b.score - a.score || b.e.last.localeCompare(a.e.last); });
+  }
+
   var pure = {
     shuffle: shuffle, pickWeighted: pickWeighted, makeChoices: makeChoices, makeTiles: makeTiles,
     checkBuild: checkBuild, chapterStats: chapterStats,
+    diagnose: diagnose, noteIssuesTo: noteIssuesTo, noteOkTo: noteOkTo, weakList: weakList, issueKey: issueKey, expand: expand, stem: stem,
     INTERVALS: INTERVALS, addDays: addDays, daysBetween: daysBetween, applyRating: applyRating,
     norm: norm, lev: lev, checkText: checkText, wordDiff: wordDiff, streak: streak,
     buildQueue: buildQueue, modeFor: modeFor, normalizeState: normalizeState, fmtDate: fmtDate
@@ -385,6 +564,8 @@
     if (plan.newLeft - plan.fresh.length > 0) {
       h += '<button class="btn ghost" data-act="extra">+ Ещё 10 новых (' + (plan.newLeft - plan.fresh.length) + ' осталось)</button>';
     }
+    var weakN = weakList(state.weak).length;
+    if (weakN) h += '<button class="btn" data-act="tstart" data-kind="weak">🎯 Слабые места: ' + weakN + ' — отработать</button>';
     h += '<button class="btn" data-act="train">🏋️ Тренажёры: правила и слова</button>';
     h += '<div class="row"><button class="btn" data-act="library">Все карточки</button>' +
       '<button class="btn" data-act="settings">Настройки</button></div></div>';
@@ -463,6 +644,7 @@
         '❌ Нужно: <b>' + esc(mode === 'cloze' ? card.answer : card.en) + '</b>';
       h += '<div class="res ' + (r.status === 'close' ? 'close' : r.status === 'ok' ? 'ok' : 'bad') + '" style="margin-top:14px">' + msg +
         (r.given ? '<div class="small muted" style="font-weight:400">Ты написал: ' + esc(r.given) + '</div>' : '') + '</div>';
+      h += diagHTML(r.diag && r.diag.issues);
       h += answerBlock(card) + '</div>';
       if (r.status === 'ok' || r.status === 'close') {
         h += '<div class="row"><button class="btn good" data-act="rate" data-rating="good">Дальше</button>' +
@@ -571,6 +753,11 @@
   function rate(rating) {
     var item = session.queue.shift();
     var day = today();
+    var res = session.result;
+    var isWord = item.card.type === 'word' || item.card.type === 'phrase';
+    if (res && res.diag && (rating === 'again' || res.status === 'close')) noteIssues(res.diag.issues);
+    else if (rating === 'again' && isWord) noteIssues([wordIssue(item.card)]);
+    else if (isWord && rating !== 'again') noteOk('w:' + item.card.en.toLowerCase());
     state.cards[item.card.id] = applyRating(state.cards[item.card.id], rating, day);
     state.days[day] = (state.days[day] || 0) + 1;
     saveJSON(LS.progress, state);
@@ -592,9 +779,59 @@
     var targets = item.mode === 'cloze' ? [card.answer].concat(card.alts || []) : [card.en].concat(card.alts || []);
     var status = checkText(text, targets, item.mode !== 'cloze' && card.type === 'word');
     if (status === 'empty') { toast('Напиши ответ или нажми «Не знаю»'); return; }
+    var diag = null;
+    if (status !== 'ok') {
+      diag = diagnose(text, targets, known());
+      if (!diag.issues.length) diag.issues = [wordIssue(card)];
+    }
     session.step = 'result';
-    session.result = { status: status, given: text.trim() };
+    session.result = { status: status, given: text.trim(), diag: diag };
     render();
+  }
+
+  /* ---------- слабые места: учёт и показ ---------- */
+  var knownCache = null;
+  function known() {
+    var n = cards.length + (drillData.drills || []).length;
+    if (knownCache && knownCache.n === n) return knownCache.map;
+    var map = {};
+    function add(s) { expand(String(s || '')).forEach(function (w) { map[w] = 1; }); }
+    cards.forEach(function (c) { add(c.en); add(c.ex); add(c.text); add(c.answer); });
+    (drillData.drills || []).forEach(function (d) { add(d.q); add(d.answer); (d.options || []).forEach(add); });
+    knownCache = { n: n, map: map };
+    return map;
+  }
+  function chName(ch) { return drillData.chapters && drillData.chapters[ch] ? drillData.chapters[ch] : ''; }
+
+  function issueText(is) {
+    if (is.t === 'rule') return '📐 Правило · гл. ' + is.ch + (chName(is.ch) ? ' «' + chName(is.ch) + '»' : '') + (is.note ? ': ' + is.note : '');
+    if (is.t === 'spell') return '🔤 Написание слова: ' + is.got + ' → ' + is.want;
+    if (is.note) return '📖 ' + is.note;
+    if (is.got && is.want) return '📖 Другое слово: ' + is.got + ' → ' + is.want;
+    return '📖 Слово: ' + (is.want || is.got);
+  }
+  function diagHTML(issues) {
+    if (!issues || !issues.length) return '';
+    var hasRule = issues.some(function (i) { return i.t === 'rule'; });
+    var hasWord = issues.some(function (i) { return i.t !== 'rule'; });
+    var head = hasRule && hasWord ? 'Ошибки и в правиле, и в слове' : hasRule ? 'Ошибка в правиле' : 'Ошибка в слове';
+    return '<div class="diag"><div class="diag-h">' + head + '</div>' +
+      issues.map(function (i) { return '<div class="diag-i">' + esc(issueText(i)) + '</div>'; }).join('') + '</div>';
+  }
+
+  function saveState() { saveJSON(LS.progress, state); }
+  function noteIssues(issues) {
+    noteIssuesTo(state.weak, issues, today());
+    saveState();
+  }
+  function noteOk(key) {
+    if (!key) return;
+    noteOkTo(state.weak, key);
+    saveState();
+  }
+  function wordIssue(card) {
+    var en = card.en || card.answer;
+    return { t: 'word', want: en, got: '', note: 'Слово: ' + en + (card.ru ? ' = ' + card.ru : '') };
   }
 
   /* ---------- тренажёры ---------- */
@@ -602,6 +839,7 @@
     { kind: 'en2ru', icon: '🇬🇧', title: 'Выбери перевод', sub: 'слово по-английски → выбери русский перевод' },
     { kind: 'ru2en', icon: '🇷🇺', title: 'Выбери слово', sub: 'слово по-русски → выбери английское' },
     { kind: 'assemble', icon: '🔤', title: 'Собери слово или фразу', sub: 'из букв и слов по русской подсказке' },
+    { kind: 'typeword', icon: '⌨️', title: 'Напиши слово', sub: 'русское слово → напиши по-английски (проверка написания)' },
     { kind: 'listen', icon: '🎧', title: 'Аудио-квиз', sub: 'послушай и выбери, что услышал', needTts: true },
     { kind: 'pairs', icon: '🔗', title: 'Пары', sub: 'найди перевод для каждого слова' }
   ];
@@ -641,6 +879,8 @@
       it.q = c.ru; it.prompt = 'Выбери по-английски'; it.options = makeChoices(c, pool, 'en');
     } else if (kind === 'listen') {
       it.q = '🔊'; it.speak = c.en; it.autoSpeak = true; it.prompt = 'Послушай и выбери, что услышал'; it.options = makeChoices(c, pool, 'en');
+    } else if (kind === 'typeword') {
+      it.kind = 'type'; it.ru = c.ru; it.alts = c.alts || []; it.prompt = 'Напиши по-английски';
     } else if (kind === 'assemble') {
       it.kind = 'build'; it.ru = c.ru;
       it.byLetters = /^[a-z]+$/i.test(c.en);
@@ -657,9 +897,36 @@
     };
   }
 
+  // Сессия по слабым местам: самые проблемные правила (по главам) + самые проблемные слова
+  function buildWeakItems() {
+    var wl = weakList(state.weak), items = [];
+    var rules = wl.filter(function (x) { return x.e.k === 'r'; }).slice(0, 3);
+    var words = wl.filter(function (x) { return x.e.k === 'w'; }).slice(0, 5);
+    var pool = wordPool();
+    rules.forEach(function (x) {
+      var list = (drillData.drills || []).filter(function (d) { return d.ch === x.e.ch && (d.cat || 'rule') === 'rule'; });
+      pickWeighted(list, state.drills, 4).forEach(function (d) { items.push(drillItem(d)); });
+    });
+    words.forEach(function (x) {
+      var w = x.e.w;
+      var dl = (drillData.drills || []).filter(function (d) {
+        return (d.cat === 'spell' || d.cat === 'word') && expand(d.answer).indexOf(w) !== -1;
+      });
+      var card = pool.filter(function (c) { return c.en.toLowerCase() === w; })[0] ||
+        pool.filter(function (c) { return expand(c.en).indexOf(w) !== -1; })[0] ||
+        pool.filter(function (c) { return stem(c.en.toLowerCase()) === stem(w); })[0];
+      if (dl.length) items.push(drillItem(pickWeighted(dl, state.drills, 1)[0]));
+      if (card) items.push(wordItem('typeword', card, pool));
+    });
+    return shuffle(items).slice(0, 14);
+  }
+
   function startTraining(kind, ch) {
     var items = [], list;
-    if (kind === 'rules' || kind === 'mistakes' || kind === 'chapter') {
+    if (kind === 'weak') {
+      items = buildWeakItems();
+      if (!items.length) { toast(weakList(state.weak).length ? 'Для этих слабых мест пока нет упражнений' : 'Слабых мест пока нет 👍'); return; }
+    } else if (kind === 'rules' || kind === 'mistakes' || kind === 'chapter') {
       list = drillData.drills;
       if (kind === 'mistakes') list = list.filter(function (d) { return d.mine; });
       if (kind === 'chapter') list = list.filter(function (d) { return String(d.ch) === String(ch); });
@@ -693,8 +960,36 @@
     if (ok) ts.stats.ok++; else { ts.stats.bad++; ts.wrong.push(it); }
   }
 
+  function diagForItem(it, ok, given) {
+    if (ok) return null;
+    var d = it.d, issues = [];
+    if (it.store === 'drills') {
+      var cat = d.cat || 'rule';
+      if (it.kind === 'choice') {
+        issues = cat === 'rule' ? [{ t: 'rule', ch: d.ch, note: '', got: given, want: it.answer }]
+          : [{ t: cat, got: given, want: it.answer }];
+      } else if (given) {
+        issues = diagnose(given, [it.answer].concat(it.alts || []), known()).issues;
+      }
+      if (!issues.length) issues = cat === 'rule' ? [{ t: 'rule', ch: d.ch, note: '', got: '', want: '' }] : [{ t: cat, got: '', want: it.answer }];
+    } else {
+      var c = it.card;
+      if (it.kind === 'build' || it.kind === 'type') {
+        if (given) issues = diagnose(given, [c.en].concat(c.alts || []), known()).issues;
+      }
+      if (!issues.length) issues = [wordIssue(c)];
+    }
+    return issues;
+  }
+
   function finishItem(it, ok, given, idx) {
     it.result = { ok: ok, given: given, idx: idx };
+    it.diag = diagForItem(it, ok, given);
+    if (!it.counted) {
+      if (!ok) noteIssues(it.diag);
+      else noteOk(it.store === 'drills' ? ((it.d.cat || 'rule') === 'rule' ? 'r:' + it.d.ch : 'w:' + String(it.answer).toLowerCase())
+        : 'w:' + it.card.en.toLowerCase());
+    }
     record(it, ok);
     ts.step = 'result';
     render();
@@ -769,7 +1064,8 @@
       if (Object.keys(it.matched).length === it.pairs.length) {
         it.pairs.forEach(function (p) {
           var okp = !it.bad[p.id];
-          record({ id: p.id, store: 'train', card: p, origKind: 'en2ru', kind: 'choice' }, okp);
+          if (okp) noteOk('w:' + p.en.toLowerCase()); else noteIssues([wordIssue(p)]);
+          record({ id: p.id, store: 'train', card: p, origKind: 'en2ru', kind: 'choice', diag: okp ? null : [wordIssue(p)] }, okp);
         });
         ts.step = 'result';
         it.result = { ok: Object.keys(it.bad).length === 0 };
@@ -783,10 +1079,37 @@
     }
   }
 
+  function weakPanelHTML() {
+    var wl = weakList(state.weak);
+    if (!wl.length) return '';
+    var rules = wl.filter(function (x) { return x.e.k === 'r'; }).slice(0, 4);
+    var words = wl.filter(function (x) { return x.e.k === 'w'; }).slice(0, 6);
+    var h = '<div class="panel"><h2>🎯 Слабые места</h2><p class="muted small">Собрано из твоих ошибок. Каждый верный ответ уменьшает счёт.</p>';
+    if (rules.length) {
+      h += '<div class="small muted" style="margin:8px 0 4px">В правилах:</div>';
+      rules.forEach(function (x) {
+        var last = x.e.ex && x.e.ex.length ? x.e.ex[x.e.ex.length - 1] : null;
+        h += '<div class="list-item"><div class="line"><div class="en">📐 Глава ' + x.e.ch + ' · ' + esc(chName(x.e.ch)) + '</div>' +
+          '<span class="chip">ошибок: ' + x.e.bad + '</span></div>' +
+          (last && (last.got || last.want) ? '<div class="small muted">' + esc(last.got || '—') + ' → ' + esc(last.want || '—') + '</div>' : '') + '</div>';
+      });
+    }
+    if (words.length) {
+      h += '<div class="small muted" style="margin:10px 0 4px">В словах:</div><div>';
+      words.forEach(function (x) {
+        h += '<span class="chip wchip">' + (x.e.ex && x.e.ex.length && x.e.ex[x.e.ex.length - 1].t === 'spell' ? '🔤 ' : '📖 ') + esc(x.e.w) + ' · ' + x.e.bad + '</span>';
+      });
+      h += '</div>';
+    }
+    h += '<button class="btn primary" style="margin-top:14px" data-act="tstart" data-kind="weak">Отработать слабые места</button></div>';
+    return h;
+  }
+
   function trainHTML() {
     var h = '<div class="topbar"><button class="icon-btn" data-act="home" aria-label="Назад">←</button>' +
       '<div style="flex:1"><h1>Тренажёры</h1><div class="muted small">Отдельно от карточек: прогресс карточек не меняется</div></div></div>';
 
+    h += weakPanelHTML();
     var drills = drillData.drills || [];
     var cs = chapterStats(drills, state.drills);
     var mineCount = drills.filter(function (d) { return d.mine; }).length;
@@ -824,6 +1147,7 @@
     h += '<div class="res ' + (r.ok ? 'ok' : 'bad') + '" style="margin-top:14px">' +
       (r.ok ? '✅ Верно!' : '❌ Верный ответ: <b>' + esc(it.answer) + '</b>') +
       (!r.ok && r.given ? '<div class="small muted" style="font-weight:400">Ты ответил: ' + esc(r.given) + '</div>' : '') + '</div>';
+    if (!r.ok) h += diagHTML(it.diag);
     if (it.why) h += '<div class="note" style="margin-top:0">' + esc(it.why) + '</div>';
     if (it.card) h += answerBlock(it.card);
     return h;
@@ -927,6 +1251,7 @@
       ts.wrong.forEach(function (it) {
         var left = it.store === 'drills' ? (it.q || it.ru || '') : (it.card ? it.card.en + ' — ' + it.card.ru : '');
         h += '<div class="list-item"><div class="small muted">' + esc(left) + '</div><div class="en">' + esc(it.answer || (it.card && it.card.en) || '') + '</div>' +
+          (it.diag ? it.diag.map(function (i) { return '<div class="small diag-i">' + esc(issueText(i)) + '</div>'; }).join('') : '') +
           (it.why ? '<div class="small muted">' + esc(it.why) + '</div>' : '') + '</div>';
       });
       h += '</div>';
@@ -972,7 +1297,7 @@
       case 'settings': view = 'settings'; render(); break;
       case 'reveal': session.step = 'result'; render(); break;
       case 'rate': rate(el.getAttribute('data-rating')); break;
-      case 'idk': session.step = 'result'; session.result = { status: 'skip', given: '' }; render(); break;
+      case 'idk': session.step = 'result'; session.result = { status: 'skip', given: '', diag: { issues: [wordIssue(session.queue[0].card)] } }; render(); break;
       case 'speak': speak(el.getAttribute('data-text')); break;
       case 'slow': speak(el.getAttribute('data-text'), 0.6); break;
       case 'say': startListening(el.getAttribute('data-text')); break;

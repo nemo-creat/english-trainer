@@ -16,14 +16,15 @@ def add(ch, typ, **kw):
     d.update(kw)
     D.append(d)
 
-def C(ch, q, options, answer, why, mine=False, prompt=None):
-    add(ch, "choice", q=q, options=options, answer=answer, why=why, mine=mine, **({"prompt": prompt} if prompt else {}))
+def C(ch, q, options, answer, why, mine=False, prompt=None, cat="rule"):
+    # cat: rule — нарушено правило (глава ch); spell — ошибка в написании слова; word — выбор не того слова
+    add(ch, "choice", q=q, options=options, answer=answer, why=why, mine=mine, cat=cat, **({"prompt": prompt} if prompt else {}))
 
 def B(ch, ru, answer, extra, why, mine=False):
-    add(ch, "build", ru=ru, answer=answer, extra=extra, why=why, mine=mine)
+    add(ch, "build", ru=ru, answer=answer, extra=extra, why=why, mine=mine, cat="rule")
 
 def T(ch, ru, answer, alts, why, mine=False, prompt=None):
-    add(ch, "type", ru=ru, answer=answer, alts=alts, why=why, mine=mine, **({"prompt": prompt} if prompt else {}))
+    add(ch, "type", ru=ru, answer=answer, alts=alts, why=why, mine=mine, cat="rule", **({"prompt": prompt} if prompt else {}))
 
 # ---------------- 1. Предложение и глагол ----------------
 C(1, "My program ___ beautiful.", ["is", "are", "am", "be"], "is",
@@ -92,7 +93,7 @@ T(4, "Сегодня я исправил небольшие баги.", "Today I
    "Today I fixed some small bugs", "I fixed some small bugs today", "Today I fixed the small bugs", "I fixed the small bugs today"],
   "fixed (прошлое), I с большой буквы, лишних is нет. Ошибка из занятия: «Today i fix is small mistakes and bags».", mine=True)
 C(4, "Ошибка в программе по-английски: ___", ["bug", "bag", "back", "big"], "bug",
-  "bug = ошибка в программе, bag = сумка. Ловушка на слух (глава 11).", mine=True)
+  "bug = ошибка в программе, bag = сумка. Ловушка на слух (глава 11).", mine=True, cat="word")
 
 # ---------------- 5. Будущее: will ----------------
 C(5, "Today I ___ work as a taxi driver.", ["will", "wills", "am will", "will to"], "will", "will + глагол без изменений: I will work.")
@@ -173,14 +174,14 @@ C(11, "I cook sandwiches ___ breakfast.", ["for", "on", "in", "at"], "for", "Н�
 C(11, "Maybe at ___.", ["1 p.m.", "13 o'clock", "one hour", "on 13"], "1 p.m.",
   "o'clock говорим с 1–12. Для 13:00 естественнее 1 p.m. или 13:00.", mine=True, prompt="Как сказать «в час дня»?")
 C(11, "I like the ___. (приложение на телефоне)", ["app", "software", "soft", "program of phone"], "app",
-  "app = приложение на телефоне. software = программа вообще (Imabu software).")
+  "app = приложение на телефоне. software = программа вообще (Imabu software).", cat="word")
 C(11, "Imabu ___ shows sales.", ["software", "app", "softwares", "a software"], "software",
-  "software неисчисляемое: без a и без -s.")
-C(11, "Как пишется «программа» (software)?", ["software", "softweare", "sowtware", "softwere"], "software", "soft + ware. Ошибка из занятия: «softweare».", mine=True)
-C(11, "Как пишется «красивый»?", ["beautiful", "beautifull", "beutiful", "beatiful"], "beautiful", "В конце одна l: beautiful. Ошибка из занятия: «beautifull».", mine=True)
-C(11, "Как пишется «сегодня»?", ["today", "tooday", "todai", "to day"], "today", "Одно o в середине. Ошибка из занятия: «tooday».", mine=True)
+  "software неисчисляемое: без a и без -s.", cat="word")
+C(11, "Как пишется «программа» (software)?", ["software", "softweare", "sowtware", "softwere"], "software", "soft + ware. Ошибка из занятия: «softweare».", mine=True, cat="spell")
+C(11, "Как пишется «красивый»?", ["beautiful", "beautifull", "beutiful", "beatiful"], "beautiful", "В конце одна l: beautiful. Ошибка из занятия: «beautifull».", mine=True, cat="spell")
+C(11, "Как пишется «сегодня»?", ["today", "tooday", "todai", "to day"], "today", "Одно o в середине. Ошибка из занятия: «tooday».", mine=True, cat="spell")
 C(11, "I don't ___ the answer. (я не знаю)", ["know", "now", "no", "knew"], "know",
-  "know = знать (k не читается). now = сейчас. Ловушка на слух. Ошибка из занятия: «I don't now».", mine=True)
+  "know = знать (k не читается). now = сейчас. Ловушка на слух. Ошибка из занятия: «I don't now».", mine=True, cat="word")
 C(11, "I'm making ___. (английский словарь)", ["an English dictionary", "dictionary of English", "dictionary English", "a English dictionary"],
   "an English dictionary", "Определение ставим перед словом: English dictionary. English начинается с гласного звука: an.", mine=True,
   prompt="Как сказать «английский словарь»?")

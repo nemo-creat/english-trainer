@@ -28,7 +28,8 @@
    ],
    "answer": "is",
    "why": "Один предмет (program): is. Глагол «быть» в английском обязателен, даже когда по-русски его нет.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d01-02",
@@ -43,7 +44,8 @@
    ],
    "answer": "am",
    "why": "С I всегда am (в речи I'm).",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d01-03",
@@ -58,7 +60,8 @@
    ],
    "answer": "are",
    "why": "Много предметов или людей (sellers): are.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d01-04",
@@ -74,6 +77,7 @@
    "answer": "The software is beautiful.",
    "why": "Без глагола предложения нет: нужен is.",
    "mine": false,
+   "cat": "rule",
    "prompt": "Какое предложение верное?"
   },
   {
@@ -87,6 +91,7 @@
    ],
    "why": "Два глагола подряд соединяем словом and: I cook and eat. Ошибка из занятия: «I cook eat».",
    "mine": true,
+   "cat": "rule",
    "prompt": "Исправь ошибку в «I cook eat»"
   },
   {
@@ -100,7 +105,8 @@
     "am"
    ],
    "why": "Порядок: кто → что делает → что. Глагол один.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d01-07",
@@ -115,7 +121,8 @@
    ],
    "answer": "shows",
    "why": "«Показывает» = shows. Делать (make) здесь не подходит по смыслу. Ошибка из занятия: «My software make it all».",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d01-08",
@@ -130,7 +137,8 @@
    ],
    "answer": "I'm working on software right now.",
    "why": "Один глагол в нужной форме: am + working. Лишнее is убираем.",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d02-01",
@@ -145,7 +153,8 @@
    ],
    "answer": "uses",
    "why": "she + привычка: к глаголу добавляем -s.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d02-02",
@@ -160,7 +169,8 @@
    ],
    "answer": "helps",
    "why": "software = один предмет (it): help → helps.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d02-03",
@@ -175,7 +185,8 @@
    ],
    "answer": "check",
    "why": "С I глагол без изменений. every morning = привычка.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d02-04",
@@ -190,7 +201,8 @@
    ],
    "answer": "fixes",
    "why": "Глагол на -x: добавляем -es.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d02-05",
@@ -205,7 +217,8 @@
    ],
    "answer": "studies",
    "why": "Согласная + y: y меняем на ies.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d02-06",
@@ -220,7 +233,8 @@
    ],
    "answer": "has",
    "why": "have → has для he / she / it.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d02-07",
@@ -235,7 +249,8 @@
     "I use it every day."
    ],
    "why": "Привычка (every day): Present Simple, без -ing и без I'm.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d02-08",
@@ -248,7 +263,8 @@
     "is"
    ],
    "why": "software = it → helps; продавцов много → sellers.",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d02-09",
@@ -263,7 +279,8 @@
    ],
    "answer": "My software helps sellers.",
    "why": "helps (с -s) и sellers (много продавцов).",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d02-10",
@@ -278,7 +295,8 @@
    ],
    "answer": "use",
    "why": "После do глагол без -s.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d03-01",
@@ -293,7 +311,8 @@
    ],
    "answer": "am working",
    "why": "right now = прямо сейчас: am + working.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d03-02",
@@ -308,7 +327,8 @@
    ],
    "answer": "is cooking",
    "why": "she → is; прямо сейчас → -ing.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d03-03",
@@ -323,7 +343,8 @@
    ],
    "answer": "I use it every day.",
    "why": "every day = привычка. I'm + простой глагол всегда ошибка. Ошибка из занятия: «I'm use this every day».",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d03-04",
@@ -338,7 +359,8 @@
    ],
    "answer": "I'm working today.",
    "why": "Перед -ing нужен am / I'm. Ошибка из занятия: «I working today».",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d03-05",
@@ -353,7 +375,8 @@
    ],
    "answer": "making",
    "why": "Немое e на конце убираем: make → making.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d03-06",
@@ -368,7 +391,8 @@
    ],
    "answer": "running",
    "why": "Короткое слово с одной гласной и согласной: согласную удваиваем.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d03-07",
@@ -383,7 +407,8 @@
    ],
    "answer": "like",
    "why": "like, want, need, know обычно без -ing.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d03-08",
@@ -396,7 +421,8 @@
     "am"
    ],
    "why": "I'm + working; над = on; словарь один → a dictionary.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d03-09",
@@ -416,7 +442,8 @@
     "I am making an English dictionary"
    ],
    "why": "Прямо сейчас: am + making; словарь один: a dictionary.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d04-01",
@@ -431,7 +458,8 @@
    ],
    "answer": "worked",
    "why": "yesterday = прошлое: work + ed.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d04-02",
@@ -446,7 +474,8 @@
    ],
    "answer": "was",
    "why": "Прошлое от «быть»: was (I, he, she, it) / were (we, you, they).",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d04-03",
@@ -461,7 +490,8 @@
    ],
    "answer": "fixed",
    "why": "Действие закончилось: fix + ed.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d04-04",
@@ -476,7 +506,8 @@
    ],
    "answer": "were",
    "why": "Много людей, прошлое: were.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d04-05",
@@ -491,7 +522,8 @@
    ],
    "answer": "used",
    "why": "Глагол на -e: добавляем только -d.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d04-06",
@@ -506,7 +538,8 @@
    ],
    "answer": "My day was normal.",
    "why": "День уже прошёл → was. Ошибка из занятия: «My day is normal».",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d04-07",
@@ -525,7 +558,8 @@
     "I fixed the small bugs today"
    ],
    "why": "fixed (прошлое), I с большой буквы, лишних is нет. Ошибка из занятия: «Today i fix is small mistakes and bags».",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d04-08",
@@ -540,7 +574,8 @@
    ],
    "answer": "bug",
    "why": "bug = ошибка в программе, bag = сумка. Ловушка на слух (глава 11).",
-   "mine": true
+   "mine": true,
+   "cat": "word"
   },
   {
    "id": "d05-01",
@@ -555,7 +590,8 @@
    ],
    "answer": "will",
    "why": "will + глагол без изменений: I will work.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d05-02",
@@ -570,7 +606,8 @@
    ],
    "answer": "will finish",
    "why": "tomorrow = будущее: will + глагол без -s.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d05-03",
@@ -585,7 +622,8 @@
    ],
    "answer": "fix",
    "why": "После will никогда нет -s, -ed, -ing.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d05-04",
@@ -600,7 +638,8 @@
    ],
    "answer": "I'll",
    "why": "Сокращение: I will → I'll.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d05-05",
@@ -613,7 +652,8 @@
     "am"
    ],
    "why": "tomorrow → will + work.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d05-06",
@@ -631,7 +671,8 @@
     "Tomorrow I'll check the sales"
    ],
    "why": "will + check, без -s.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d06-01",
@@ -646,7 +687,8 @@
    ],
    "answer": "Do",
    "why": "I / you / we / they: Do.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d06-02",
@@ -661,7 +703,8 @@
    ],
    "answer": "Does",
    "why": "he / she / it: Does.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d06-03",
@@ -676,7 +719,8 @@
    ],
    "answer": "show",
    "why": "-s «переехало» в does, глагол без -s. Ошибка-ловушка из учебника.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d06-04",
@@ -691,7 +735,8 @@
    ],
    "answer": "Did",
    "why": "Прошлое: Did + глагол без -ed.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d06-05",
@@ -706,7 +751,8 @@
    ],
    "answer": "fix",
    "why": "После did глагол в обычной форме.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d06-06",
@@ -721,7 +767,8 @@
    ],
    "answer": "Is",
    "why": "С глаголом «быть» меняем порядок: Is + предмет + ...?",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d06-07",
@@ -734,7 +781,8 @@
     "does"
    ],
    "why": "Do + you + глагол без -s.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d06-08",
@@ -747,7 +795,8 @@
     "doing"
    ],
    "why": "Вопросительное слово + do + кто + глагол.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d06-09",
@@ -760,7 +809,8 @@
     "Why do you work?"
    ],
    "why": "Why + do + you + глагол.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d07-01",
@@ -775,7 +825,8 @@
    ],
    "answer": "don't",
    "why": "I don't know = я не знаю. Ошибка из занятия: «I don't now» (now = сейчас, know = знать).",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d07-02",
@@ -790,7 +841,8 @@
    ],
    "answer": "doesn't",
    "why": "he / she / it: doesn't + глагол без -s.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d07-03",
@@ -805,7 +857,8 @@
    ],
    "answer": "didn't",
    "why": "Прошлое: didn't + глагол без -ed.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d07-04",
@@ -820,7 +873,8 @@
    ],
    "answer": "isn't",
    "why": "С глаголом «быть»: is + not = isn't.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d07-05",
@@ -835,7 +889,8 @@
    ],
    "answer": "won't",
    "why": "Будущее отрицание: will not = won't.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d07-06",
@@ -848,7 +903,8 @@
     "I don't know."
    ],
    "why": "don't + know.",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d08-01",
@@ -863,7 +919,8 @@
    ],
    "answer": "a",
    "why": "Один из многих словарей: a. Ошибка из занятия: «dictionary of English» без артикля.",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d08-02",
@@ -878,7 +935,8 @@
    ],
    "answer": "an",
    "why": "app начинается с гласного звука: an.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d08-03",
@@ -893,7 +951,8 @@
    ],
    "answer": "The",
    "why": "Баг уже упоминали, он известен обоим: the.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d08-04",
@@ -908,7 +967,8 @@
    ],
    "answer": "—",
    "why": "money неисчисляемое слово: артикль не нужен. Ошибка из занятия: «I need a money».",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d08-05",
@@ -923,7 +983,8 @@
    ],
    "answer": "the",
    "why": "Речь о конкретных данных: the. Ошибка из занятия: «I check all statistics sheets».",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d08-06",
@@ -938,7 +999,8 @@
    ],
    "answer": "—",
    "why": "Говорим вообще: артикль не нужен.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d08-07",
@@ -953,7 +1015,8 @@
    ],
    "answer": "a",
    "why": "seller начинается с согласного звука: a.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d08-08",
@@ -968,7 +1031,8 @@
    ],
    "answer": "a",
    "why": "Профессия: as + a + слово. taxi: согласный звук, значит a.",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d09-01",
@@ -983,7 +1047,8 @@
    ],
    "answer": "cooler",
    "why": "Короткое слово: добавляем -er. Ошибка из занятия: «more cool».",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d09-02",
@@ -998,7 +1063,8 @@
    ],
    "answer": "bigger",
    "why": "big → bigger (согласную удваиваем).",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d09-03",
@@ -1013,7 +1079,8 @@
    ],
    "answer": "more beautiful",
    "why": "Длинное слово: more + слово.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d09-04",
@@ -1028,7 +1095,8 @@
    ],
    "answer": "better",
    "why": "Особая форма: good → better.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d09-05",
@@ -1043,7 +1111,8 @@
    ],
    "answer": "better",
    "why": "Сделать лучше = better.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d10-01",
@@ -1058,7 +1127,8 @@
    ],
    "answer": "making",
    "why": "like + глагол-ing.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d10-02",
@@ -1073,7 +1143,8 @@
    ],
    "answer": "to",
    "why": "want + to + глагол.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d10-03",
@@ -1088,7 +1159,8 @@
    ],
    "answer": "because",
    "why": "because + целое предложение: потому что.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d10-04",
@@ -1103,7 +1175,8 @@
    ],
    "answer": "When",
    "why": "When = когда.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d10-05",
@@ -1118,7 +1191,8 @@
    ],
    "answer": "and",
    "why": "Перед последним пунктом перечисления ставим and.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d10-06",
@@ -1134,6 +1208,7 @@
    "answer": "Nice to meet you too.",
    "why": "See you = «до встречи» (прощание). При знакомстве: Nice to meet you. Ошибка из занятия: «See you too».",
    "mine": true,
+   "cat": "rule",
    "prompt": "Как ответить на «Nice to meet you»?"
   },
   {
@@ -1149,7 +1224,8 @@
     "I like this because it's convenient"
    ],
    "why": "like + it + because + целое предложение.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d10-08",
@@ -1162,7 +1238,8 @@
     "the"
    ],
    "why": "want + to + глагол без -ing.",
-   "mine": false
+   "mine": false,
+   "cat": "rule"
   },
   {
    "id": "d10-09",
@@ -1177,7 +1254,8 @@
     "I make sandwiches for breakfast."
    ],
    "why": "На завтрак = for breakfast (не on). Ошибка из занятия: «I cook on breakfast».",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d11-01",
@@ -1192,7 +1270,8 @@
    ],
    "answer": "as",
    "why": "as = в роли, кем-то. in a taxi = внутри такси как пассажир. Ошибка из занятия: «work in taxi».",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d11-02",
@@ -1207,7 +1286,8 @@
    ],
    "answer": "for",
    "why": "На завтрак / обед / ужин: for breakfast / lunch / dinner.",
-   "mine": true
+   "mine": true,
+   "cat": "rule"
   },
   {
    "id": "d11-03",
@@ -1223,6 +1303,7 @@
    "answer": "1 p.m.",
    "why": "o'clock говорим с 1–12. Для 13:00 естественнее 1 p.m. или 13:00.",
    "mine": true,
+   "cat": "rule",
    "prompt": "Как сказать «в час дня»?"
   },
   {
@@ -1238,7 +1319,8 @@
    ],
    "answer": "app",
    "why": "app = приложение на телефоне. software = программа вообще (Imabu software).",
-   "mine": false
+   "mine": false,
+   "cat": "word"
   },
   {
    "id": "d11-05",
@@ -1253,7 +1335,8 @@
    ],
    "answer": "software",
    "why": "software неисчисляемое: без a и без -s.",
-   "mine": false
+   "mine": false,
+   "cat": "word"
   },
   {
    "id": "d11-06",
@@ -1268,7 +1351,8 @@
    ],
    "answer": "software",
    "why": "soft + ware. Ошибка из занятия: «softweare».",
-   "mine": true
+   "mine": true,
+   "cat": "spell"
   },
   {
    "id": "d11-07",
@@ -1283,7 +1367,8 @@
    ],
    "answer": "beautiful",
    "why": "В конце одна l: beautiful. Ошибка из занятия: «beautifull».",
-   "mine": true
+   "mine": true,
+   "cat": "spell"
   },
   {
    "id": "d11-08",
@@ -1298,7 +1383,8 @@
    ],
    "answer": "today",
    "why": "Одно o в середине. Ошибка из занятия: «tooday».",
-   "mine": true
+   "mine": true,
+   "cat": "spell"
   },
   {
    "id": "d11-09",
@@ -1313,7 +1399,8 @@
    ],
    "answer": "know",
    "why": "know = знать (k не читается). now = сейчас. Ловушка на слух. Ошибка из занятия: «I don't now».",
-   "mine": true
+   "mine": true,
+   "cat": "word"
   },
   {
    "id": "d11-10",
@@ -1329,6 +1416,7 @@
    "answer": "an English dictionary",
    "why": "Определение ставим перед словом: English dictionary. English начинается с гласного звука: an.",
    "mine": true,
+   "cat": "rule",
    "prompt": "Как сказать «английский словарь»?"
   }
  ]
