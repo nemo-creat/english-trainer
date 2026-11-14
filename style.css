@@ -110,7 +110,7 @@ input[type="range"] { width: 100%; }
 .list-item:last-child { border-bottom: 0; }
 .list-item .en { font-weight: 700; }
 .dots { letter-spacing: 2px; color: var(--accent); font-size: 14px; }
-.chip { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--panel2); color: var(--muted); margin-left: 6px; }
+.chip { white-space: nowrap; flex-shrink: 0; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--panel2); color: var(--muted); margin-left: 6px; }
 
 label.field { display: block; margin: 14px 0 6px; font-weight: 600; }
 
@@ -121,3 +121,32 @@ label.field { display: block; margin: 14px 0 6px; font-weight: 600; }
   font-size: 15px; transition: all 0.25s; max-width: 90vw; text-align: center;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* тренажёры */
+.btn.split { justify-content: space-between; text-align: left; gap: 10px; }
+.btn.split > span:first-child { min-width: 0; }
+.btn.opt { justify-content: flex-start; text-align: left; font-size: 19px; }
+.btn.opt.ok { background: #1f6b4d; border-color: var(--ok); }
+.btn.opt.bad { background: #7a2e2e; border-color: var(--bad); }
+.btn.opt[disabled] { opacity: 1; pointer-events: none; }
+.btn.opt[disabled]:not(.ok):not(.bad) { opacity: 0.55; }
+.ans-line {
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  min-height: 62px; margin-top: 14px; padding: 10px;
+  border: 2px dashed var(--line); border-radius: 14px;
+}
+.tiles { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.tile {
+  min-height: 48px; min-width: 48px; padding: 8px 14px;
+  border: 1px solid var(--line); border-radius: 12px;
+  background: var(--panel2); color: var(--text); font: inherit; font-weight: 600; cursor: pointer;
+}
+.tile.on { background: #1b4560; border-color: var(--accent); }
+.tile.used { opacity: 0.25; pointer-events: none; }
+.tile[disabled] { pointer-events: none; }
+.tiles.letters .tile, .ans-line.letters .tile { min-width: 44px; padding: 8px 10px; font-size: 22px; text-transform: lowercase; }
+.pairs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn.pair { min-height: 52px; font-size: 16px; padding: 8px 10px; word-break: break-word; }
+.btn.pair.sel { border-color: var(--accent); background: #1b4560; }
+.btn.pair.done { opacity: 0.3; pointer-events: none; background: #1f6b4d; }
+.btn.pair.flash { background: #7a2e2e; border-color: var(--bad); }

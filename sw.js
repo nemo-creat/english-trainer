@@ -1,6 +1,6 @@
 'use strict';
 // Офлайн-кэш. cards.json — сначала сеть (чтобы новые карточки появлялись сразу), остальное — из кэша с фоновым обновлением.
-const CACHE = 'english-trainer-v1';
+const CACHE = 'english-trainer-v2';
 const SHELL = [
   './',
   './index.html',
@@ -9,7 +9,8 @@ const SHELL = [
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
-  './cards.json'
+  './cards.json',
+  './drills.json'
 ];
 
 self.addEventListener('install', (e) => {
@@ -30,7 +31,7 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 
-  if (url.pathname.endsWith('/cards.json')) {
+  if (url.pathname.endsWith('/cards.json') || url.pathname.endsWith('/drills.json')) {
     e.respondWith(
       fetch(req, { cache: 'no-cache' })
         .then((res) => {

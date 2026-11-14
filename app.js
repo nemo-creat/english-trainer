@@ -3,7 +3,7 @@
 (function () {
   var INTERVALS = [0, 1, 3, 7, 14, 30]; // дней до следующего показа по ступеням (stage)
   var MAX_AGAIN = 3;                    // сколько раз за сессию возвращаем ошибочную карточку
-  var LS = { progress: 'et_progress_v1', cards: 'et_cards_v1', settings: 'et_settings_v1' };
+  var LS = { progress: 'et_progress_v1', cards: 'et_cards_v1', settings: 'et_settings_v1', drills: 'et_drills_v1' };
 
   /* ---------- чистые функции (экспортируются для тестов) ---------- */
   function pad(n) { return String(n).padStart(2, '0'); }
@@ -125,11 +125,76 @@
       v: 1,
       cards: (s && s.cards) || {},
       days: (s && s.days) || {},
-      extra: (s && s.extra) || {}
+      extra: (s && s.extra) || {},
+      drills: (s && s.drills) || {},   // прогресс упражнений по правилам: id -> {ok, bad, last}
+      train: (s && s.train) || {}      // прогресс тренажёров слов: id -> {ok, bad, last}
     };
   }
 
+  /* ---------- тренажёры: чистые функции ---------- */
+  function shuffle(arr, rng) {
+    rng = rng || Math.random;
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(rng() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  // Выбор n элементов: сначала те, где больше ошибок и меньше верных ответов, новые тоже в приоритете
+  function pickWeighted(items, prog, n, rng) {
+    rng = rng || Math.random;
+    var scored = items.map(function (it) {
+      var r = prog && prog[it.id];
+      var score = r ? (r.bad * 2 - r.ok * 0.7) : 1.5;
+      return { it: it, s: score + rng() * 2 };
+    });
+    scored.sort(function (a, b) { return b.s - a.s; });
+    return scored.slice(0, n).map(function (x) { return x.it; });
+  }
+
+  // 4 варианта ответа: верный + 3 неверных из pool (без повторов текста)
+  function makeChoices(card, pool, field, rng) {
+    var right = card[field];
+    var same = pool.filter(function (c) { return c.id !== card.id && c.type === card.type && c[field] !== right; });
+    var others = same.length >= 3 ? same : pool.filter(function (c) { return c.id !== card.id && c[field] !== right; });
+    var seen = {}; seen[right] = 1;
+    var wrong = [];
+    shuffle(others, rng).forEach(function (c) {
+      if (wrong.length < 3 && !seen[c[field]]) { seen[c[field]] = 1; wrong.push(c[field]); }
+    });
+    return shuffle([right].concat(wrong), rng);
+  }
+
+  // Плитки для сборки: слова предложения (+ лишние) или буквы слова. Порядок не должен совпадать с верным.
+  function makeTiles(answer, extra, byLetters, rng) {
+    var base = byLetters ? answer.toLowerCase().split('') : answer.split(/\s+/);
+    var tiles = base.concat(extra || []);
+    var out = shuffle(tiles, rng);
+    for (var k = 0; k < 6 && tiles.length > 1 && out.join(' ') === base.join(' '); k++) out = shuffle(tiles, rng);
+    return out;
+  }
+
+  function checkBuild(tokens, answer, byLetters) {
+    var joined = tokens.join(byLetters ? '' : ' ');
+    return checkText(joined, [answer], false) === 'ok';
+  }
+
+  function chapterStats(drills, prog) {
+    var res = {};
+    drills.forEach(function (d) {
+      var s = res[d.ch] || (res[d.ch] = { total: 0, seen: 0, ok: 0, bad: 0 });
+      s.total++;
+      var r = prog && prog[d.id];
+      if (r) { s.seen++; s.ok += r.ok; s.bad += r.bad; }
+    });
+    return res;
+  }
+
   var pure = {
+    shuffle: shuffle, pickWeighted: pickWeighted, makeChoices: makeChoices, makeTiles: makeTiles,
+    checkBuild: checkBuild, chapterStats: chapterStats,
     INTERVALS: INTERVALS, addDays: addDays, daysBetween: daysBetween, applyRating: applyRating,
     norm: norm, lev: lev, checkText: checkText, wordDiff: wordDiff, streak: streak,
     buildQueue: buildQueue, modeFor: modeFor, normalizeState: normalizeState, fmtDate: fmtDate
@@ -146,6 +211,8 @@
   var view = 'home';
   var session = null;
   var libQuery = '';
+  var drillData = { chapters: {}, drills: [] };
+  var ts = null; // сессия тренажёра
 
   function loadJSON(key, fallback) {
     try {
@@ -226,6 +293,23 @@
       });
   }
 
+  function loadDrills() {
+    return fetch('drills.json', { cache: 'no-cache' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        if (!data || !Array.isArray(data.drills)) throw new Error('bad drills.json');
+        saveJSON(LS.drills, data);
+        return data;
+      })
+      .catch(function () {
+        var cached = loadJSON(LS.drills, null);
+        return cached && Array.isArray(cached.drills) ? cached : { chapters: {}, drills: [] };
+      });
+  }
+
   /* ---------- шаблоны ---------- */
   function speakBtn(text, slow) {
     if (!ttsOk || !text) return '';
@@ -301,6 +385,7 @@
     if (plan.newLeft - plan.fresh.length > 0) {
       h += '<button class="btn ghost" data-act="extra">+ Ещё 10 новых (' + (plan.newLeft - plan.fresh.length) + ' осталось)</button>';
     }
+    h += '<button class="btn" data-act="train">🏋️ Тренажёры: правила и слова</button>';
     h += '<div class="row"><button class="btn" data-act="library">Все карточки</button>' +
       '<button class="btn" data-act="settings">Настройки</button></div></div>';
     h += '<p class="muted small center" style="margin-top:18px">Карточки обновлены: ' + esc(meta.updated || '—') + '</p>';
@@ -455,6 +540,8 @@
     else if (view === 'session') { root.innerHTML = sessionHTML(); afterSessionRender(); }
     else if (view === 'library') root.innerHTML = libraryHTML();
     else if (view === 'settings') root.innerHTML = settingsHTML();
+    else if (view === 'train') root.innerHTML = trainHTML();
+    else if (view === 'tsession') { root.innerHTML = tsessionHTML(); afterTsessionRender(); }
     try { window.scrollTo(0, 0); } catch (e) { /* не критично */ }
   }
 
@@ -510,6 +597,354 @@
     render();
   }
 
+  /* ---------- тренажёры ---------- */
+  var WORD_KINDS = [
+    { kind: 'en2ru', icon: '🇬🇧', title: 'Выбери перевод', sub: 'слово по-английски → выбери русский перевод' },
+    { kind: 'ru2en', icon: '🇷🇺', title: 'Выбери слово', sub: 'слово по-русски → выбери английское' },
+    { kind: 'assemble', icon: '🔤', title: 'Собери слово или фразу', sub: 'из букв и слов по русской подсказке' },
+    { kind: 'listen', icon: '🎧', title: 'Аудио-квиз', sub: 'послушай и выбери, что услышал', needTts: true },
+    { kind: 'pairs', icon: '🔗', title: 'Пары', sub: 'найди перевод для каждого слова' }
+  ];
+
+  function wordPool() {
+    return cards.filter(function (c) { return (c.type === 'word' || c.type === 'phrase') && c.en && c.ru; });
+  }
+  // Тренируем слова, которые ты уже видел в приложении; если их мало — берём все
+  function wordSource() {
+    var all = wordPool();
+    var seen = all.filter(function (c) { return state.cards[c.id]; });
+    return seen.length >= 8 ? seen : all;
+  }
+  function chapterLabel(ch) {
+    return 'Глава ' + ch + (drillData.chapters && drillData.chapters[ch] ? ' · ' + drillData.chapters[ch] : '');
+  }
+
+  function drillItem(d) {
+    var it = {
+      id: d.id, store: 'drills', kind: d.type, d: d, tag: chapterLabel(d.ch), mine: !!d.mine,
+      q: d.q, prompt: d.prompt, ru: d.ru, answer: d.answer, alts: d.alts || [], why: d.why
+    };
+    if (d.type === 'choice') it.options = shuffle(d.options);
+    if (d.type === 'build') { it.tiles = makeTiles(d.answer, d.extra, false); it.picked = []; it.byLetters = false; }
+    return it;
+  }
+
+  function assembleOk(c) {
+    return /^[a-z]+$/i.test(c.en) ? (c.en.length >= 4 && c.en.length <= 12) : (c.en.split(/\s+/).length >= 2 && c.en.split(/\s+/).length <= 8);
+  }
+
+  function wordItem(kind, c, pool) {
+    var it = { id: c.id, store: 'train', kind: 'choice', origKind: kind, card: c, tag: 'Слова', answer: c.en };
+    if (kind === 'en2ru') {
+      it.q = c.en; it.speak = c.en; it.prompt = 'Выбери перевод'; it.answer = c.ru; it.options = makeChoices(c, pool, 'ru');
+    } else if (kind === 'ru2en') {
+      it.q = c.ru; it.prompt = 'Выбери по-английски'; it.options = makeChoices(c, pool, 'en');
+    } else if (kind === 'listen') {
+      it.q = '🔊'; it.speak = c.en; it.autoSpeak = true; it.prompt = 'Послушай и выбери, что услышал'; it.options = makeChoices(c, pool, 'en');
+    } else if (kind === 'assemble') {
+      it.kind = 'build'; it.ru = c.ru;
+      it.byLetters = /^[a-z]+$/i.test(c.en);
+      it.tiles = makeTiles(c.en, [], it.byLetters); it.picked = [];
+      it.prompt = it.byLetters ? 'Собери слово из букв' : 'Собери фразу из слов';
+    }
+    return it;
+  }
+
+  function pairsItem(group) {
+    return {
+      kind: 'pairs', store: 'train', tag: 'Слова', pairs: group,
+      left: shuffle(group), right: shuffle(group), matched: {}, bad: {}, sel: null, flash: null, id: 'pairs'
+    };
+  }
+
+  function startTraining(kind, ch) {
+    var items = [], list;
+    if (kind === 'rules' || kind === 'mistakes' || kind === 'chapter') {
+      list = drillData.drills;
+      if (kind === 'mistakes') list = list.filter(function (d) { return d.mine; });
+      if (kind === 'chapter') list = list.filter(function (d) { return String(d.ch) === String(ch); });
+      items = pickWeighted(list, state.drills, 10).map(drillItem);
+    } else {
+      var src = wordSource(), pool = wordPool();
+      if (kind === 'assemble') src = src.filter(assembleOk);
+      if (kind === 'pairs') {
+        var pk = pickWeighted(src, state.train, 12);
+        for (var i = 0; i < pk.length; i += 6) if (pk.length - i >= 3) items.push(pairsItem(pk.slice(i, i + 6)));
+      } else {
+        items = pickWeighted(src, state.train, 10).map(function (c) { return wordItem(kind, c, pool); });
+      }
+    }
+    if (!items.length) { toast('Пока нет материала для этого тренажёра'); return; }
+    ts = { kind: kind, ch: ch, items: items, total: items.length, done: 0, step: 'ask', stats: { ok: 0, bad: 0 }, wrong: [] };
+    view = 'tsession';
+    render();
+  }
+
+  function record(it, ok) {
+    if (it.counted) return;
+    it.counted = true;
+    var day = today();
+    var store = state[it.store];
+    var r = store[it.id] || (store[it.id] = { ok: 0, bad: 0, last: day });
+    if (ok) r.ok++; else r.bad++;
+    r.last = day;
+    state.days[day] = (state.days[day] || 0) + 1;
+    saveJSON(LS.progress, state);
+    if (ok) ts.stats.ok++; else { ts.stats.bad++; ts.wrong.push(it); }
+  }
+
+  function finishItem(it, ok, given, idx) {
+    it.result = { ok: ok, given: given, idx: idx };
+    record(it, ok);
+    ts.step = 'result';
+    render();
+  }
+
+  function tPick(i) {
+    var it = ts && ts.items[0];
+    if (!it || ts.step !== 'ask' || it.kind !== 'choice') return;
+    finishItem(it, it.options[i] === it.answer, it.options[i], i);
+  }
+  function tTypeSubmit(text) {
+    var it = ts && ts.items[0];
+    if (!it || ts.step !== 'ask') return;
+    var status = checkText(text, [it.answer].concat(it.alts || []), false);
+    if (status === 'empty') { toast('Напиши ответ или нажми «Не знаю»'); return; }
+    finishItem(it, status === 'ok', text.trim());
+  }
+  function tTile(i) {
+    var it = ts && ts.items[0];
+    if (!it || ts.step !== 'ask' || it.kind !== 'build') return;
+    if (it.picked.indexOf(i) === -1) it.picked.push(i);
+    render();
+  }
+  function tUntile(pos) {
+    var it = ts && ts.items[0];
+    if (!it || ts.step !== 'ask' || it.kind !== 'build') return;
+    it.picked.splice(pos, 1);
+    render();
+  }
+  function tokensOf(it) { return it.picked.map(function (i) { return it.tiles[i]; }); }
+  function tCheckBuild() {
+    var it = ts && ts.items[0];
+    if (!it || ts.step !== 'ask' || it.kind !== 'build') return;
+    if (!it.picked.length) { toast('Нажимай на слова внизу, чтобы собрать ответ'); return; }
+    var toks = tokensOf(it);
+    finishItem(it, checkBuild(toks, it.answer, it.byLetters) || (it.alts || []).some(function (a) { return checkBuild(toks, a, it.byLetters); }),
+      toks.join(it.byLetters ? '' : ' '));
+  }
+  function tGiveUp() {
+    var it = ts && ts.items[0];
+    if (!it || ts.step !== 'ask') return;
+    finishItem(it, false, '');
+  }
+  function tNext() {
+    if (!ts) return;
+    ts.items.shift();
+    ts.done++;
+    ts.step = 'ask';
+    render();
+  }
+  function tRetry() {
+    if (!ts || !ts.wrong.length) return;
+    var pool = wordPool();
+    var items = ts.wrong.map(function (it) {
+      if (it.store === 'drills') return drillItem(it.d);
+      return wordItem(it.origKind === 'assemble' && !assembleOk(it.card) ? 'en2ru' : (it.origKind || 'en2ru'), it.card, pool);
+    });
+    ts = { kind: ts.kind, ch: ts.ch, items: items, total: items.length, done: 0, step: 'ask', stats: { ok: 0, bad: 0 }, wrong: [] };
+    render();
+  }
+
+  function tPair(side, id) {
+    var it = ts && ts.items[0];
+    if (!it || it.kind !== 'pairs' || it.flash || it.matched[id]) return;
+    if (!it.sel || it.sel.side === side) { it.sel = { side: side, id: id }; render(); return; }
+    var other = it.sel;
+    it.sel = null;
+    if (other.id === id) {
+      it.matched[id] = true;
+      var c = it.pairs.filter(function (p) { return p.id === id; })[0];
+      if (c) speak(c.en);
+      if (Object.keys(it.matched).length === it.pairs.length) {
+        it.pairs.forEach(function (p) {
+          var okp = !it.bad[p.id];
+          record({ id: p.id, store: 'train', card: p, origKind: 'en2ru', kind: 'choice' }, okp);
+        });
+        ts.step = 'result';
+        it.result = { ok: Object.keys(it.bad).length === 0 };
+      }
+      render();
+    } else {
+      it.bad[id] = 1; it.bad[other.id] = 1;
+      it.flash = { a: other.side + ':' + other.id, b: side + ':' + id };
+      render();
+      setTimeout(function () { if (ts && ts.items[0] === it) { it.flash = null; render(); } }, 650);
+    }
+  }
+
+  function trainHTML() {
+    var h = '<div class="topbar"><button class="icon-btn" data-act="home" aria-label="Назад">←</button>' +
+      '<div style="flex:1"><h1>Тренажёры</h1><div class="muted small">Отдельно от карточек: прогресс карточек не меняется</div></div></div>';
+
+    var drills = drillData.drills || [];
+    var cs = chapterStats(drills, state.drills);
+    var mineCount = drills.filter(function (d) { return d.mine; }).length;
+    h += '<div class="panel"><h2>Правила</h2>';
+    if (!drills.length) {
+      h += '<p class="muted">Упражнения пока не загрузились. Открой приложение с интернетом один раз.</p></div>';
+    } else {
+      h += '<div class="stack"><button class="btn primary" data-act="tstart" data-kind="rules">Смешанная тренировка · 10 упражнений</button>' +
+        '<button class="btn" data-act="tstart" data-kind="mistakes">Мои ошибки с занятий · ' + mineCount + '</button></div>' +
+        '<p class="muted small" style="margin:14px 0 6px">По главам учебника:</p><div class="stack">';
+      Object.keys(drillData.chapters || {}).sort(function (a, b) { return a - b; }).forEach(function (k) {
+        var s = cs[k];
+        if (!s) return;
+        var acc = (s.ok + s.bad) ? Math.round(s.ok / (s.ok + s.bad) * 100) + '%' : 'новое';
+        h += '<button class="btn split" data-act="tstart" data-kind="chapter" data-ch="' + esc(k) + '"><span>' + k + '. ' +
+          esc(drillData.chapters[k]) + '</span><span class="chip">' + s.total + ' упр. · ' + acc + '</span></button>';
+      });
+      h += '</div></div>';
+    }
+
+    var src = wordSource(), all = wordPool();
+    h += '<div class="panel"><h2>Слова</h2><p class="muted small">Берём слова, которые ты уже видел в приложении (' +
+      src.length + ' из ' + all.length + '). Чаще попадаются те, где были ошибки.</p><div class="stack">';
+    WORD_KINDS.forEach(function (k) {
+      if (k.needTts && !ttsOk) return;
+      h += '<button class="btn split" data-act="tstart" data-kind="' + k.kind + '"><span>' + k.icon + ' ' + esc(k.title) +
+        '</span></button><div class="muted small" style="margin-top:-4px">' + esc(k.sub) + '</div>';
+    });
+    h += '</div></div>';
+    return h;
+  }
+
+  function resultBlock(it) {
+    var r = it.result, h = '';
+    h += '<div class="res ' + (r.ok ? 'ok' : 'bad') + '" style="margin-top:14px">' +
+      (r.ok ? '✅ Верно!' : '❌ Верный ответ: <b>' + esc(it.answer) + '</b>') +
+      (!r.ok && r.given ? '<div class="small muted" style="font-weight:400">Ты ответил: ' + esc(r.given) + '</div>' : '') + '</div>';
+    if (it.why) h += '<div class="note" style="margin-top:0">' + esc(it.why) + '</div>';
+    if (it.card) h += answerBlock(it.card);
+    return h;
+  }
+
+  function tsessionHTML() {
+    var it = ts.items[0];
+    if (!it) return tdoneHTML();
+    var asking = ts.step === 'ask';
+    var pct = Math.round((ts.done / ts.total) * 100);
+    var h = '<div class="topbar"><button class="icon-btn" data-act="train" aria-label="Выйти">✕</button>' +
+      '<div class="progress"><i style="width:' + pct + '%"></i></div>' +
+      '<div class="badge">' + ts.done + '/' + ts.total + '</div></div>';
+
+    if (it.kind === 'pairs') {
+      h += '<div class="panel"><div class="tag">Найди пары</div><p class="muted small">Нажми слово слева, потом его перевод справа.</p><div class="pairs"><div class="stack">';
+      it.left.forEach(function (p) {
+        var cls = 'btn small pair' + (it.matched[p.id] ? ' done' : '') + (it.sel && it.sel.side === 'en' && it.sel.id === p.id ? ' sel' : '') +
+          (it.flash && it.flash.a === 'en:' + p.id || it.flash && it.flash.b === 'en:' + p.id ? ' flash' : '');
+        h += '<button class="' + cls + '" data-act="tpair" data-side="en" data-id="' + esc(p.id) + '">' + esc(p.en) + '</button>';
+      });
+      h += '</div><div class="stack">';
+      it.right.forEach(function (p) {
+        var cls = 'btn small pair' + (it.matched[p.id] ? ' done' : '') + (it.sel && it.sel.side === 'ru' && it.sel.id === p.id ? ' sel' : '') +
+          (it.flash && it.flash.a === 'ru:' + p.id || it.flash && it.flash.b === 'ru:' + p.id ? ' flash' : '');
+        h += '<button class="' + cls + '" data-act="tpair" data-side="ru" data-id="' + esc(p.id) + '">' + esc(p.ru) + '</button>';
+      });
+      h += '</div></div></div>';
+      if (!asking) {
+        h += '<div class="res ' + (it.result.ok ? 'ok' : 'close') + '">' + (it.result.ok ? '✅ Все пары без ошибок!' : '🟡 Все пары найдены. Ошибки запомнил — эти слова будут попадаться чаще.') +
+          '</div><button class="btn primary" data-act="tnext">Дальше</button>';
+      }
+      return h;
+    }
+
+    h += '<div class="panel"><div class="tag">' + esc(it.tag) + '</div>' + (it.mine ? '<div><span class="chip" style="margin-left:0">из твоих ошибок</span></div>' : '');
+
+    if (it.kind === 'choice') {
+      h += '<div class="muted" style="margin-top:4px">' + esc(it.prompt || 'Выбери правильный вариант') + '</div>';
+      if (it.q) {
+        var parts = it.q.split('___');
+        h += '<div class="line" style="margin-top:8px"><div class="big">' + (parts.length > 1
+          ? esc(parts[0]) + '<span class="blank"></span>' + esc(parts.slice(1).join('___')) : esc(it.q)) + '</div>' + speakBtn(it.speak) + '</div>';
+      }
+      h += '<div class="stack" style="margin-top:14px">';
+      it.options.forEach(function (o, i) {
+        var cls = 'btn opt';
+        if (!asking) {
+          if (o === it.answer) cls += ' ok';
+          else if (it.result.idx === i) cls += ' bad';
+        }
+        h += '<button class="' + cls + '" data-act="tpick" data-i="' + i + '"' + (asking ? '' : ' disabled') + '>' +
+          (o === '—' ? '— (артикль не нужен)' : esc(o)) + '</button>';
+      });
+      h += '</div>';
+      if (!asking) h += resultBlock(it);
+      h += '</div>';
+    } else if (it.kind === 'type') {
+      h += '<div class="muted" style="margin-top:4px">' + esc(it.prompt || 'Переведи на английский') + '</div>' +
+        '<div class="ru" style="margin-top:6px">' + esc(it.ru) + '</div>';
+      if (asking) {
+        h += '<form data-form="tanswer" style="margin-top:14px"><input type="text" id="tans" autocomplete="off" autocapitalize="off" ' +
+          'autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Твой ответ">' +
+          '<button class="btn primary" type="submit" style="margin-top:10px">Проверить</button></form>' +
+          '<button class="btn ghost small" data-act="tidk" style="margin-top:8px">Не знаю</button></div>';
+      } else {
+        h += resultBlock(it) + '</div>';
+      }
+    } else if (it.kind === 'build') {
+      h += '<div class="muted" style="margin-top:4px">' + esc(it.prompt || 'Собери предложение') + '</div>' +
+        '<div class="ru" style="margin-top:6px">' + esc(it.ru) + '</div>';
+      h += '<div class="ans-line' + (it.byLetters ? ' letters' : '') + '">';
+      if (!it.picked.length && asking) h += '<span class="muted small">Здесь появится твой ответ</span>';
+      it.picked.forEach(function (ti, pos) {
+        h += '<button class="tile on" data-act="tuntile" data-i="' + pos + '"' + (asking ? '' : ' disabled') + '>' + esc(it.tiles[ti]) + '</button>';
+      });
+      h += '</div>';
+      if (asking) {
+        h += '<div class="tiles' + (it.byLetters ? ' letters' : '') + '">';
+        it.tiles.forEach(function (t, i) {
+          h += '<button class="tile' + (it.picked.indexOf(i) !== -1 ? ' used' : '') + '" data-act="ttile" data-i="' + i + '">' + esc(t) + '</button>';
+        });
+        h += '</div><div class="stack" style="margin-top:14px"><button class="btn primary" data-act="tcheck">Проверить</button>' +
+          '<button class="btn ghost small" data-act="tidk">Не знаю</button></div></div>';
+      } else {
+        h += resultBlock(it) + '</div>';
+      }
+    }
+
+    if (!asking) h += '<button class="btn primary" data-act="tnext">Дальше</button>';
+    return h;
+  }
+
+  function tdoneHTML() {
+    var s = ts.stats, n = s.ok + s.bad;
+    var h = '<div class="panel center" style="margin-top:20px"><div style="font-size:54px">' + (s.bad === 0 ? '🏆' : '💪') + '</div>' +
+      '<h2>Готово: ' + s.ok + ' из ' + n + '</h2><p class="muted">' +
+      (s.bad === 0 ? 'Без ошибок. Так держать!' : 'Ошибки ниже: разберём и повторим.') + '</p></div>';
+    if (ts.wrong.length) {
+      h += '<div class="panel"><h2>Над чем поработать</h2>';
+      ts.wrong.forEach(function (it) {
+        var left = it.store === 'drills' ? (it.q || it.ru || '') : (it.card ? it.card.en + ' — ' + it.card.ru : '');
+        h += '<div class="list-item"><div class="small muted">' + esc(left) + '</div><div class="en">' + esc(it.answer || (it.card && it.card.en) || '') + '</div>' +
+          (it.why ? '<div class="small muted">' + esc(it.why) + '</div>' : '') + '</div>';
+      });
+      h += '</div>';
+    }
+    h += '<div class="stack">' + (ts.wrong.length ? '<button class="btn good" data-act="tretry">Повторить ошибки · ' + ts.wrong.length + '</button>' : '') +
+      '<button class="btn primary" data-act="tstart" data-kind="' + esc(ts.kind) + '" data-ch="' + esc(ts.ch || '') + '">Ещё раз</button>' +
+      '<button class="btn" data-act="train">В меню тренажёров</button></div>';
+    return h;
+  }
+
+  function afterTsessionRender() {
+    var it = ts && ts.items[0];
+    if (!it) return;
+    var inp = document.getElementById('tans');
+    if (inp) setTimeout(function () { inp.focus(); }, 60);
+    if (it.autoSpeak && ts.step === 'ask') setTimeout(function () { speak(it.speak); }, 200);
+  }
+
   /* ---------- события ---------- */
   root.addEventListener('click', function (e) {
     var el = e.target.closest('[data-act]');
@@ -522,7 +957,17 @@
         saveJSON(LS.progress, state);
         render();
         break;
-      case 'home': view = 'home'; session = null; render(); break;
+      case 'home': view = 'home'; session = null; ts = null; render(); break;
+      case 'train': view = 'train'; ts = null; render(); break;
+      case 'tstart': startTraining(el.getAttribute('data-kind'), el.getAttribute('data-ch')); break;
+      case 'tpick': tPick(parseInt(el.getAttribute('data-i'), 10)); break;
+      case 'ttile': tTile(parseInt(el.getAttribute('data-i'), 10)); break;
+      case 'tuntile': tUntile(parseInt(el.getAttribute('data-i'), 10)); break;
+      case 'tcheck': tCheckBuild(); break;
+      case 'tidk': tGiveUp(); break;
+      case 'tnext': tNext(); break;
+      case 'tretry': tRetry(); break;
+      case 'tpair': tPair(el.getAttribute('data-side'), el.getAttribute('data-id')); break;
       case 'library': view = 'library'; render(); break;
       case 'settings': view = 'settings'; render(); break;
       case 'reveal': session.step = 'result'; render(); break;
@@ -548,6 +993,8 @@
   });
 
   root.addEventListener('submit', function (e) {
+    var tform = e.target.closest('[data-form="tanswer"]');
+    if (tform) { e.preventDefault(); tTypeSubmit(document.getElementById('tans').value); return; }
     var form = e.target.closest('[data-form="answer"]');
     if (!form) return;
     e.preventDefault();
@@ -634,6 +1081,7 @@
   }
 
   /* ---------- запуск ---------- */
+  loadDrills().then(function (d) { drillData = d; if (view === 'train') render(); });
   loadCards()
     .then(function (data) { cards = data.cards; meta = data; render(); })
     .catch(function () {

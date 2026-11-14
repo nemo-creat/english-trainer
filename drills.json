@@ -1,0 +1,1335 @@
+{
+ "version": 1,
+ "updated": "2026-11-14",
+ "chapters": {
+  "1": "Предложение и глагол",
+  "2": "Present Simple",
+  "3": "Present Continuous",
+  "4": "Past Simple",
+  "5": "Будущее: will",
+  "6": "Вопросы",
+  "7": "Отрицание",
+  "8": "Артикли",
+  "9": "Сравнение",
+  "10": "Полезные конструкции",
+  "11": "Предлоги и слова-ловушки"
+ },
+ "drills": [
+  {
+   "id": "d01-01",
+   "ch": 1,
+   "type": "choice",
+   "q": "My program ___ beautiful.",
+   "options": [
+    "is",
+    "are",
+    "am",
+    "be"
+   ],
+   "answer": "is",
+   "why": "Один предмет (program): is. Глагол «быть» в английском обязателен, даже когда по-русски его нет.",
+   "mine": false
+  },
+  {
+   "id": "d01-02",
+   "ch": 1,
+   "type": "choice",
+   "q": "I ___ a seller.",
+   "options": [
+    "am",
+    "is",
+    "are",
+    "be"
+   ],
+   "answer": "am",
+   "why": "С I всегда am (в речи I'm).",
+   "mine": false
+  },
+  {
+   "id": "d01-03",
+   "ch": 1,
+   "type": "choice",
+   "q": "Sellers ___ busy.",
+   "options": [
+    "are",
+    "is",
+    "am",
+    "be"
+   ],
+   "answer": "are",
+   "why": "Много предметов или людей (sellers): are.",
+   "mine": false
+  },
+  {
+   "id": "d01-04",
+   "ch": 1,
+   "type": "choice",
+   "q": "Выбери верное предложение.",
+   "options": [
+    "The software is beautiful.",
+    "The software beautiful.",
+    "The software be beautiful.",
+    "The software are beautiful."
+   ],
+   "answer": "The software is beautiful.",
+   "why": "Без глагола предложения нет: нужен is.",
+   "mine": false,
+   "prompt": "Какое предложение верное?"
+  },
+  {
+   "id": "d01-05",
+   "ch": 1,
+   "type": "type",
+   "ru": "Я готовлю и ем.",
+   "answer": "I cook and eat",
+   "alts": [
+    "I cook and eat."
+   ],
+   "why": "Два глагола подряд соединяем словом and: I cook and eat. Ошибка из занятия: «I cook eat».",
+   "mine": true,
+   "prompt": "Исправь ошибку в «I cook eat»"
+  },
+  {
+   "id": "d01-06",
+   "ch": 1,
+   "type": "build",
+   "ru": "Я проверяю продажи.",
+   "answer": "I check sales",
+   "extra": [
+    "checks",
+    "am"
+   ],
+   "why": "Порядок: кто → что делает → что. Глагол один.",
+   "mine": false
+  },
+  {
+   "id": "d01-07",
+   "ch": 1,
+   "type": "choice",
+   "q": "My software ___ all sales. (показывает)",
+   "options": [
+    "shows",
+    "makes",
+    "does",
+    "is"
+   ],
+   "answer": "shows",
+   "why": "«Показывает» = shows. Делать (make) здесь не подходит по смыслу. Ошибка из занятия: «My software make it all».",
+   "mine": true
+  },
+  {
+   "id": "d01-08",
+   "ch": 1,
+   "type": "choice",
+   "q": "Какое предложение верное?",
+   "options": [
+    "I'm working on software right now.",
+    "I make now is software.",
+    "I working now software.",
+    "I am work now is software."
+   ],
+   "answer": "I'm working on software right now.",
+   "why": "Один глагол в нужной форме: am + working. Лишнее is убираем.",
+   "mine": true
+  },
+  {
+   "id": "d02-01",
+   "ch": 2,
+   "type": "choice",
+   "q": "She ___ the app every day.",
+   "options": [
+    "uses",
+    "use",
+    "using",
+    "is use"
+   ],
+   "answer": "uses",
+   "why": "she + привычка: к глаголу добавляем -s.",
+   "mine": false
+  },
+  {
+   "id": "d02-02",
+   "ch": 2,
+   "type": "choice",
+   "q": "My software ___ sellers.",
+   "options": [
+    "helps",
+    "help",
+    "helping",
+    "to help"
+   ],
+   "answer": "helps",
+   "why": "software = один предмет (it): help → helps.",
+   "mine": false
+  },
+  {
+   "id": "d02-03",
+   "ch": 2,
+   "type": "choice",
+   "q": "I ___ sales every morning.",
+   "options": [
+    "check",
+    "checks",
+    "am check",
+    "checking"
+   ],
+   "answer": "check",
+   "why": "С I глагол без изменений. every morning = привычка.",
+   "mine": false
+  },
+  {
+   "id": "d02-04",
+   "ch": 2,
+   "type": "choice",
+   "q": "He ___ small bugs.",
+   "options": [
+    "fixes",
+    "fix",
+    "fixs",
+    "fixies"
+   ],
+   "answer": "fixes",
+   "why": "Глагол на -x: добавляем -es.",
+   "mine": false
+  },
+  {
+   "id": "d02-05",
+   "ch": 2,
+   "type": "choice",
+   "q": "She ___ English.",
+   "options": [
+    "studies",
+    "studys",
+    "studyes",
+    "study"
+   ],
+   "answer": "studies",
+   "why": "Согласная + y: y меняем на ies.",
+   "mine": false
+  },
+  {
+   "id": "d02-06",
+   "ch": 2,
+   "type": "choice",
+   "q": "My program ___ a lot of data.",
+   "options": [
+    "has",
+    "have",
+    "haves",
+    "is have"
+   ],
+   "answer": "has",
+   "why": "have → has для he / she / it.",
+   "mine": false
+  },
+  {
+   "id": "d02-07",
+   "ch": 2,
+   "type": "type",
+   "ru": "Я пользуюсь этим каждый день.",
+   "answer": "I use it every day",
+   "alts": [
+    "I use this every day",
+    "I use it daily",
+    "I use this daily",
+    "I use it every day."
+   ],
+   "why": "Привычка (every day): Present Simple, без -ing и без I'm.",
+   "mine": false
+  },
+  {
+   "id": "d02-08",
+   "ch": 2,
+   "type": "build",
+   "ru": "Моя программа помогает продавцам.",
+   "answer": "My software helps sellers",
+   "extra": [
+    "help",
+    "is"
+   ],
+   "why": "software = it → helps; продавцов много → sellers.",
+   "mine": true
+  },
+  {
+   "id": "d02-09",
+   "ch": 2,
+   "type": "choice",
+   "q": "Какое предложение верное?",
+   "options": [
+    "My software helps sellers.",
+    "My software help sellers.",
+    "My software helps seller.",
+    "My software is help sellers."
+   ],
+   "answer": "My software helps sellers.",
+   "why": "helps (с -s) и sellers (много продавцов).",
+   "mine": true
+  },
+  {
+   "id": "d02-10",
+   "ch": 2,
+   "type": "choice",
+   "q": "Do you ___ the app every day?",
+   "options": [
+    "use",
+    "uses",
+    "using",
+    "used"
+   ],
+   "answer": "use",
+   "why": "После do глагол без -s.",
+   "mine": false
+  },
+  {
+   "id": "d03-01",
+   "ch": 3,
+   "type": "choice",
+   "q": "Right now I ___ on the dictionary.",
+   "options": [
+    "am working",
+    "work",
+    "working",
+    "works"
+   ],
+   "answer": "am working",
+   "why": "right now = прямо сейчас: am + working.",
+   "mine": false
+  },
+  {
+   "id": "d03-02",
+   "ch": 3,
+   "type": "choice",
+   "q": "She ___ breakfast right now.",
+   "options": [
+    "is cooking",
+    "cooks",
+    "cooking",
+    "cook"
+   ],
+   "answer": "is cooking",
+   "why": "she → is; прямо сейчас → -ing.",
+   "mine": false
+  },
+  {
+   "id": "d03-03",
+   "ch": 3,
+   "type": "choice",
+   "q": "Какое предложение верное?",
+   "options": [
+    "I use it every day.",
+    "I'm use it every day.",
+    "I using it every day.",
+    "I'm using it every day."
+   ],
+   "answer": "I use it every day.",
+   "why": "every day = привычка. I'm + простой глагол всегда ошибка. Ошибка из занятия: «I'm use this every day».",
+   "mine": true
+  },
+  {
+   "id": "d03-04",
+   "ch": 3,
+   "type": "choice",
+   "q": "Какое предложение верное?",
+   "options": [
+    "I'm working today.",
+    "I working today.",
+    "I am work today.",
+    "I'm work today."
+   ],
+   "answer": "I'm working today.",
+   "why": "Перед -ing нужен am / I'm. Ошибка из занятия: «I working today».",
+   "mine": true
+  },
+  {
+   "id": "d03-05",
+   "ch": 3,
+   "type": "choice",
+   "q": "make → ___ (добавь -ing)",
+   "options": [
+    "making",
+    "makeing",
+    "makking",
+    "maks"
+   ],
+   "answer": "making",
+   "why": "Немое e на конце убираем: make → making.",
+   "mine": false
+  },
+  {
+   "id": "d03-06",
+   "ch": 3,
+   "type": "choice",
+   "q": "run → ___",
+   "options": [
+    "running",
+    "runing",
+    "runeing",
+    "runs"
+   ],
+   "answer": "running",
+   "why": "Короткое слово с одной гласной и согласной: согласную удваиваем.",
+   "mine": false
+  },
+  {
+   "id": "d03-07",
+   "ch": 3,
+   "type": "choice",
+   "q": "I ___ this app. (нравится)",
+   "options": [
+    "like",
+    "am liking",
+    "'m like",
+    "likeing"
+   ],
+   "answer": "like",
+   "why": "like, want, need, know обычно без -ing.",
+   "mine": false
+  },
+  {
+   "id": "d03-08",
+   "ch": 3,
+   "type": "build",
+   "ru": "Сейчас я работаю над словарём.",
+   "answer": "Right now I'm working on a dictionary",
+   "extra": [
+    "work",
+    "am"
+   ],
+   "why": "I'm + working; над = on; словарь один → a dictionary.",
+   "mine": false
+  },
+  {
+   "id": "d03-09",
+   "ch": 3,
+   "type": "type",
+   "ru": "Я сейчас делаю словарь.",
+   "answer": "I'm making a dictionary now",
+   "alts": [
+    "I am making a dictionary now",
+    "I'm making a dictionary right now",
+    "I am making a dictionary right now",
+    "Now I'm making a dictionary",
+    "Right now I'm making a dictionary",
+    "Now I am making a dictionary",
+    "Right now I am making a dictionary",
+    "I'm making an English dictionary",
+    "I am making an English dictionary"
+   ],
+   "why": "Прямо сейчас: am + making; словарь один: a dictionary.",
+   "mine": false
+  },
+  {
+   "id": "d04-01",
+   "ch": 4,
+   "type": "choice",
+   "q": "Yesterday I ___ on the app.",
+   "options": [
+    "worked",
+    "work",
+    "am work",
+    "was work"
+   ],
+   "answer": "worked",
+   "why": "yesterday = прошлое: work + ed.",
+   "mine": false
+  },
+  {
+   "id": "d04-02",
+   "ch": 4,
+   "type": "choice",
+   "q": "Yesterday my day ___ normal.",
+   "options": [
+    "was",
+    "is",
+    "were",
+    "be"
+   ],
+   "answer": "was",
+   "why": "Прошлое от «быть»: was (I, he, she, it) / were (we, you, they).",
+   "mine": false
+  },
+  {
+   "id": "d04-03",
+   "ch": 4,
+   "type": "choice",
+   "q": "Today I ___ small bugs. (уже сделано)",
+   "options": [
+    "fixed",
+    "fix",
+    "fixing",
+    "fixs"
+   ],
+   "answer": "fixed",
+   "why": "Действие закончилось: fix + ed.",
+   "mine": false
+  },
+  {
+   "id": "d04-04",
+   "ch": 4,
+   "type": "choice",
+   "q": "The sellers ___ busy yesterday.",
+   "options": [
+    "were",
+    "was",
+    "are",
+    "is"
+   ],
+   "answer": "were",
+   "why": "Много людей, прошлое: were.",
+   "mine": false
+  },
+  {
+   "id": "d04-05",
+   "ch": 4,
+   "type": "choice",
+   "q": "I ___ it last week. (use)",
+   "options": [
+    "used",
+    "useed",
+    "uses",
+    "using"
+   ],
+   "answer": "used",
+   "why": "Глагол на -e: добавляем только -d.",
+   "mine": false
+  },
+  {
+   "id": "d04-06",
+   "ch": 4,
+   "type": "choice",
+   "q": "Какое предложение верное?",
+   "options": [
+    "My day was normal.",
+    "My day is normal yesterday.",
+    "My day were normal.",
+    "My day was normally."
+   ],
+   "answer": "My day was normal.",
+   "why": "День уже прошёл → was. Ошибка из занятия: «My day is normal».",
+   "mine": true
+  },
+  {
+   "id": "d04-07",
+   "ch": 4,
+   "type": "type",
+   "ru": "Сегодня я исправил небольшие баги.",
+   "answer": "Today I fixed small bugs",
+   "alts": [
+    "I fixed small bugs today",
+    "Today I fixed small mistakes and bugs",
+    "Today I fixed small bugs and mistakes",
+    "I fixed small mistakes and bugs today",
+    "Today I fixed some small bugs",
+    "I fixed some small bugs today",
+    "Today I fixed the small bugs",
+    "I fixed the small bugs today"
+   ],
+   "why": "fixed (прошлое), I с большой буквы, лишних is нет. Ошибка из занятия: «Today i fix is small mistakes and bags».",
+   "mine": true
+  },
+  {
+   "id": "d04-08",
+   "ch": 4,
+   "type": "choice",
+   "q": "Ошибка в программе по-английски: ___",
+   "options": [
+    "bug",
+    "bag",
+    "back",
+    "big"
+   ],
+   "answer": "bug",
+   "why": "bug = ошибка в программе, bag = сумка. Ловушка на слух (глава 11).",
+   "mine": true
+  },
+  {
+   "id": "d05-01",
+   "ch": 5,
+   "type": "choice",
+   "q": "Today I ___ work as a taxi driver.",
+   "options": [
+    "will",
+    "wills",
+    "am will",
+    "will to"
+   ],
+   "answer": "will",
+   "why": "will + глагол без изменений: I will work.",
+   "mine": false
+  },
+  {
+   "id": "d05-02",
+   "ch": 5,
+   "type": "choice",
+   "q": "Tomorrow I ___ the dictionary.",
+   "options": [
+    "will finish",
+    "will finishes",
+    "finish will",
+    "am will finish"
+   ],
+   "answer": "will finish",
+   "why": "tomorrow = будущее: will + глагол без -s.",
+   "mine": false
+  },
+  {
+   "id": "d05-03",
+   "ch": 5,
+   "type": "choice",
+   "q": "He will ___ it tomorrow.",
+   "options": [
+    "fix",
+    "fixes",
+    "fixed",
+    "fixing"
+   ],
+   "answer": "fix",
+   "why": "После will никогда нет -s, -ed, -ing.",
+   "mine": false
+  },
+  {
+   "id": "d05-04",
+   "ch": 5,
+   "type": "choice",
+   "q": "I will = ?",
+   "options": [
+    "I'll",
+    "I'l",
+    "Ill'",
+    "I'am"
+   ],
+   "answer": "I'll",
+   "why": "Сокращение: I will → I'll.",
+   "mine": false
+  },
+  {
+   "id": "d05-05",
+   "ch": 5,
+   "type": "build",
+   "ru": "Завтра я буду работать.",
+   "answer": "Tomorrow I will work",
+   "extra": [
+    "works",
+    "am"
+   ],
+   "why": "tomorrow → will + work.",
+   "mine": false
+  },
+  {
+   "id": "d05-06",
+   "ch": 5,
+   "type": "type",
+   "ru": "Я проверю продажи завтра.",
+   "answer": "I will check sales tomorrow",
+   "alts": [
+    "I'll check sales tomorrow",
+    "Tomorrow I will check sales",
+    "Tomorrow I'll check sales",
+    "I will check the sales tomorrow",
+    "I'll check the sales tomorrow",
+    "Tomorrow I will check the sales",
+    "Tomorrow I'll check the sales"
+   ],
+   "why": "will + check, без -s.",
+   "mine": false
+  },
+  {
+   "id": "d06-01",
+   "ch": 6,
+   "type": "choice",
+   "q": "___ you use the app every day?",
+   "options": [
+    "Do",
+    "Does",
+    "Are",
+    "Is"
+   ],
+   "answer": "Do",
+   "why": "I / you / we / they: Do.",
+   "mine": false
+  },
+  {
+   "id": "d06-02",
+   "ch": 6,
+   "type": "choice",
+   "q": "___ she work at 1 p.m.?",
+   "options": [
+    "Does",
+    "Do",
+    "Is",
+    "Did"
+   ],
+   "answer": "Does",
+   "why": "he / she / it: Does.",
+   "mine": false
+  },
+  {
+   "id": "d06-03",
+   "ch": 6,
+   "type": "choice",
+   "q": "Does it ___ profit?",
+   "options": [
+    "show",
+    "shows",
+    "showing",
+    "showed"
+   ],
+   "answer": "show",
+   "why": "-s «переехало» в does, глагол без -s. Ошибка-ловушка из учебника.",
+   "mine": false
+  },
+  {
+   "id": "d06-04",
+   "ch": 6,
+   "type": "choice",
+   "q": "___ you fix the bug yesterday?",
+   "options": [
+    "Did",
+    "Do",
+    "Does",
+    "Are"
+   ],
+   "answer": "Did",
+   "why": "Прошлое: Did + глагол без -ed.",
+   "mine": false
+  },
+  {
+   "id": "d06-05",
+   "ch": 6,
+   "type": "choice",
+   "q": "Did you ___ it?",
+   "options": [
+    "fix",
+    "fixed",
+    "fixes",
+    "fixing"
+   ],
+   "answer": "fix",
+   "why": "После did глагол в обычной форме.",
+   "mine": false
+  },
+  {
+   "id": "d06-06",
+   "ch": 6,
+   "type": "choice",
+   "q": "___ the program beautiful?",
+   "options": [
+    "Is",
+    "Does",
+    "Do",
+    "Are"
+   ],
+   "answer": "Is",
+   "why": "С глаголом «быть» меняем порядок: Is + предмет + ...?",
+   "mine": false
+  },
+  {
+   "id": "d06-07",
+   "ch": 6,
+   "type": "build",
+   "ru": "Ты пользуешься этим каждый день?",
+   "answer": "Do you use it every day",
+   "extra": [
+    "uses",
+    "does"
+   ],
+   "why": "Do + you + глагол без -s.",
+   "mine": false
+  },
+  {
+   "id": "d06-08",
+   "ch": 6,
+   "type": "build",
+   "ru": "Что ты делаешь утром?",
+   "answer": "What do you do in the morning",
+   "extra": [
+    "does",
+    "doing"
+   ],
+   "why": "Вопросительное слово + do + кто + глагол.",
+   "mine": false
+  },
+  {
+   "id": "d06-09",
+   "ch": 6,
+   "type": "type",
+   "ru": "Почему ты работаешь?",
+   "answer": "Why do you work",
+   "alts": [
+    "Why do you work today",
+    "Why do you work?"
+   ],
+   "why": "Why + do + you + глагол.",
+   "mine": false
+  },
+  {
+   "id": "d07-01",
+   "ch": 7,
+   "type": "choice",
+   "q": "I ___ know.",
+   "options": [
+    "don't",
+    "doesn't",
+    "am not",
+    "not"
+   ],
+   "answer": "don't",
+   "why": "I don't know = я не знаю. Ошибка из занятия: «I don't now» (now = сейчас, know = знать).",
+   "mine": true
+  },
+  {
+   "id": "d07-02",
+   "ch": 7,
+   "type": "choice",
+   "q": "She ___ use the app.",
+   "options": [
+    "doesn't",
+    "don't",
+    "isn't",
+    "not"
+   ],
+   "answer": "doesn't",
+   "why": "he / she / it: doesn't + глагол без -s.",
+   "mine": false
+  },
+  {
+   "id": "d07-03",
+   "ch": 7,
+   "type": "choice",
+   "q": "I ___ fix the bug yesterday.",
+   "options": [
+    "didn't",
+    "don't",
+    "doesn't",
+    "wasn't"
+   ],
+   "answer": "didn't",
+   "why": "Прошлое: didn't + глагол без -ed.",
+   "mine": false
+  },
+  {
+   "id": "d07-04",
+   "ch": 7,
+   "type": "choice",
+   "q": "The software ___ beautiful.",
+   "options": [
+    "isn't",
+    "doesn't",
+    "don't",
+    "not"
+   ],
+   "answer": "isn't",
+   "why": "С глаголом «быть»: is + not = isn't.",
+   "mine": false
+  },
+  {
+   "id": "d07-05",
+   "ch": 7,
+   "type": "choice",
+   "q": "I ___ work tomorrow.",
+   "options": [
+    "won't",
+    "don't",
+    "didn't",
+    "am not"
+   ],
+   "answer": "won't",
+   "why": "Будущее отрицание: will not = won't.",
+   "mine": false
+  },
+  {
+   "id": "d07-06",
+   "ch": 7,
+   "type": "type",
+   "ru": "Я не знаю.",
+   "answer": "I don't know",
+   "alts": [
+    "I do not know",
+    "I don't know."
+   ],
+   "why": "don't + know.",
+   "mine": true
+  },
+  {
+   "id": "d08-01",
+   "ch": 8,
+   "type": "choice",
+   "q": "I'm making ___ dictionary.",
+   "options": [
+    "a",
+    "an",
+    "the",
+    "—"
+   ],
+   "answer": "a",
+   "why": "Один из многих словарей: a. Ошибка из занятия: «dictionary of English» без артикля.",
+   "mine": true
+  },
+  {
+   "id": "d08-02",
+   "ch": 8,
+   "type": "choice",
+   "q": "It is ___ app.",
+   "options": [
+    "an",
+    "a",
+    "the",
+    "—"
+   ],
+   "answer": "an",
+   "why": "app начинается с гласного звука: an.",
+   "mine": false
+  },
+  {
+   "id": "d08-03",
+   "ch": 8,
+   "type": "choice",
+   "q": "I found a bug. ___ bug is small.",
+   "options": [
+    "The",
+    "A",
+    "An",
+    "—"
+   ],
+   "answer": "The",
+   "why": "Баг уже упоминали, он известен обоим: the.",
+   "mine": false
+  },
+  {
+   "id": "d08-04",
+   "ch": 8,
+   "type": "choice",
+   "q": "I need ___ money.",
+   "options": [
+    "—",
+    "a",
+    "an",
+    "the"
+   ],
+   "answer": "—",
+   "why": "money неисчисляемое слово: артикль не нужен. Ошибка из занятия: «I need a money».",
+   "mine": true
+  },
+  {
+   "id": "d08-05",
+   "ch": 8,
+   "type": "choice",
+   "q": "I check all ___ statistics.",
+   "options": [
+    "the",
+    "a",
+    "an",
+    "—"
+   ],
+   "answer": "the",
+   "why": "Речь о конкретных данных: the. Ошибка из занятия: «I check all statistics sheets».",
+   "mine": true
+  },
+  {
+   "id": "d08-06",
+   "ch": 8,
+   "type": "choice",
+   "q": "I like ___ statistics. (вообще)",
+   "options": [
+    "—",
+    "the",
+    "a",
+    "an"
+   ],
+   "answer": "—",
+   "why": "Говорим вообще: артикль не нужен.",
+   "mine": false
+  },
+  {
+   "id": "d08-07",
+   "ch": 8,
+   "type": "choice",
+   "q": "He is ___ seller.",
+   "options": [
+    "a",
+    "an",
+    "the",
+    "—"
+   ],
+   "answer": "a",
+   "why": "seller начинается с согласного звука: a.",
+   "mine": false
+  },
+  {
+   "id": "d08-08",
+   "ch": 8,
+   "type": "choice",
+   "q": "She works as ___ taxi driver.",
+   "options": [
+    "a",
+    "an",
+    "the",
+    "—"
+   ],
+   "answer": "a",
+   "why": "Профессия: as + a + слово. taxi: согласный звук, значит a.",
+   "mine": true
+  },
+  {
+   "id": "d09-01",
+   "ch": 9,
+   "type": "choice",
+   "q": "The app is ___ than before. (cool)",
+   "options": [
+    "cooler",
+    "more cool",
+    "coolest",
+    "most cool"
+   ],
+   "answer": "cooler",
+   "why": "Короткое слово: добавляем -er. Ошибка из занятия: «more cool».",
+   "mine": true
+  },
+  {
+   "id": "d09-02",
+   "ch": 9,
+   "type": "choice",
+   "q": "This chart is ___ than that one. (big)",
+   "options": [
+    "bigger",
+    "more big",
+    "biggest",
+    "bigger than"
+   ],
+   "answer": "bigger",
+   "why": "big → bigger (согласную удваиваем).",
+   "mine": false
+  },
+  {
+   "id": "d09-03",
+   "ch": 9,
+   "type": "choice",
+   "q": "This program is ___ than that one. (beautiful)",
+   "options": [
+    "more beautiful",
+    "beautifuler",
+    "most beautiful",
+    "beautifuller"
+   ],
+   "answer": "more beautiful",
+   "why": "Длинное слово: more + слово.",
+   "mine": false
+  },
+  {
+   "id": "d09-04",
+   "ch": 9,
+   "type": "choice",
+   "q": "good → ___",
+   "options": [
+    "better",
+    "gooder",
+    "more good",
+    "best"
+   ],
+   "answer": "better",
+   "why": "Особая форма: good → better.",
+   "mine": false
+  },
+  {
+   "id": "d09-05",
+   "ch": 9,
+   "type": "choice",
+   "q": "I like making software ___.",
+   "options": [
+    "better",
+    "good",
+    "more good",
+    "best"
+   ],
+   "answer": "better",
+   "why": "Сделать лучше = better.",
+   "mine": false
+  },
+  {
+   "id": "d10-01",
+   "ch": 10,
+   "type": "choice",
+   "q": "I like ___ software.",
+   "options": [
+    "making",
+    "make",
+    "to making",
+    "makes"
+   ],
+   "answer": "making",
+   "why": "like + глагол-ing.",
+   "mine": false
+  },
+  {
+   "id": "d10-02",
+   "ch": 10,
+   "type": "choice",
+   "q": "I want ___ add a new chart.",
+   "options": [
+    "to",
+    "—",
+    "for",
+    "-ing"
+   ],
+   "answer": "to",
+   "why": "want + to + глагол.",
+   "mine": false
+  },
+  {
+   "id": "d10-03",
+   "ch": 10,
+   "type": "choice",
+   "q": "I like it ___ it is convenient.",
+   "options": [
+    "because",
+    "because of",
+    "why",
+    "so"
+   ],
+   "answer": "because",
+   "why": "because + целое предложение: потому что.",
+   "mine": false
+  },
+  {
+   "id": "d10-04",
+   "ch": 10,
+   "type": "choice",
+   "q": "___ sales go down, I check all the statistics.",
+   "options": [
+    "When",
+    "Then",
+    "What",
+    "While of"
+   ],
+   "answer": "When",
+   "why": "When = когда.",
+   "mine": false
+  },
+  {
+   "id": "d10-05",
+   "ch": 10,
+   "type": "choice",
+   "q": "I check sales, stock, logistics, ___ ad spend.",
+   "options": [
+    "and",
+    "or if",
+    "but also",
+    "with"
+   ],
+   "answer": "and",
+   "why": "Перед последним пунктом перечисления ставим and.",
+   "mine": false
+  },
+  {
+   "id": "d10-06",
+   "ch": 10,
+   "type": "choice",
+   "q": "Ты сказал «Nice to meet you». Как ответить?",
+   "options": [
+    "Nice to meet you too.",
+    "See you too.",
+    "Goodbye too.",
+    "Thank you too."
+   ],
+   "answer": "Nice to meet you too.",
+   "why": "See you = «до встречи» (прощание). При знакомстве: Nice to meet you. Ошибка из занятия: «See you too».",
+   "mine": true,
+   "prompt": "Как ответить на «Nice to meet you»?"
+  },
+  {
+   "id": "d10-07",
+   "ch": 10,
+   "type": "type",
+   "ru": "Мне это нравится, потому что это удобно.",
+   "answer": "I like it because it is convenient",
+   "alts": [
+    "I like it because it's convenient",
+    "I like it because it is convenient.",
+    "I like this because it is convenient",
+    "I like this because it's convenient"
+   ],
+   "why": "like + it + because + целое предложение.",
+   "mine": false
+  },
+  {
+   "id": "d10-08",
+   "ch": 10,
+   "type": "build",
+   "ru": "Я хочу добавить новый график.",
+   "answer": "I want to add a new chart",
+   "extra": [
+    "adding",
+    "the"
+   ],
+   "why": "want + to + глагол без -ing.",
+   "mine": false
+  },
+  {
+   "id": "d10-09",
+   "ch": 10,
+   "type": "type",
+   "ru": "Я готовлю сэндвичи на завтрак.",
+   "answer": "I make sandwiches for breakfast",
+   "alts": [
+    "I cook sandwiches for breakfast",
+    "For breakfast I make sandwiches",
+    "For breakfast I cook sandwiches",
+    "I make sandwiches for breakfast."
+   ],
+   "why": "На завтрак = for breakfast (не on). Ошибка из занятия: «I cook on breakfast».",
+   "mine": true
+  },
+  {
+   "id": "d11-01",
+   "ch": 11,
+   "type": "choice",
+   "q": "Today I will work ___ a taxi driver.",
+   "options": [
+    "as",
+    "in",
+    "on",
+    "at"
+   ],
+   "answer": "as",
+   "why": "as = в роли, кем-то. in a taxi = внутри такси как пассажир. Ошибка из занятия: «work in taxi».",
+   "mine": true
+  },
+  {
+   "id": "d11-02",
+   "ch": 11,
+   "type": "choice",
+   "q": "I cook sandwiches ___ breakfast.",
+   "options": [
+    "for",
+    "on",
+    "in",
+    "at"
+   ],
+   "answer": "for",
+   "why": "На завтрак / обед / ужин: for breakfast / lunch / dinner.",
+   "mine": true
+  },
+  {
+   "id": "d11-03",
+   "ch": 11,
+   "type": "choice",
+   "q": "Maybe at ___.",
+   "options": [
+    "1 p.m.",
+    "13 o'clock",
+    "one hour",
+    "on 13"
+   ],
+   "answer": "1 p.m.",
+   "why": "o'clock говорим с 1–12. Для 13:00 естественнее 1 p.m. или 13:00.",
+   "mine": true,
+   "prompt": "Как сказать «в час дня»?"
+  },
+  {
+   "id": "d11-04",
+   "ch": 11,
+   "type": "choice",
+   "q": "I like the ___. (приложение на телефоне)",
+   "options": [
+    "app",
+    "software",
+    "soft",
+    "program of phone"
+   ],
+   "answer": "app",
+   "why": "app = приложение на телефоне. software = программа вообще (Imabu software).",
+   "mine": false
+  },
+  {
+   "id": "d11-05",
+   "ch": 11,
+   "type": "choice",
+   "q": "Imabu ___ shows sales.",
+   "options": [
+    "software",
+    "app",
+    "softwares",
+    "a software"
+   ],
+   "answer": "software",
+   "why": "software неисчисляемое: без a и без -s.",
+   "mine": false
+  },
+  {
+   "id": "d11-06",
+   "ch": 11,
+   "type": "choice",
+   "q": "Как пишется «программа» (software)?",
+   "options": [
+    "software",
+    "softweare",
+    "sowtware",
+    "softwere"
+   ],
+   "answer": "software",
+   "why": "soft + ware. Ошибка из занятия: «softweare».",
+   "mine": true
+  },
+  {
+   "id": "d11-07",
+   "ch": 11,
+   "type": "choice",
+   "q": "Как пишется «красивый»?",
+   "options": [
+    "beautiful",
+    "beautifull",
+    "beutiful",
+    "beatiful"
+   ],
+   "answer": "beautiful",
+   "why": "В конце одна l: beautiful. Ошибка из занятия: «beautifull».",
+   "mine": true
+  },
+  {
+   "id": "d11-08",
+   "ch": 11,
+   "type": "choice",
+   "q": "Как пишется «сегодня»?",
+   "options": [
+    "today",
+    "tooday",
+    "todai",
+    "to day"
+   ],
+   "answer": "today",
+   "why": "Одно o в середине. Ошибка из занятия: «tooday».",
+   "mine": true
+  },
+  {
+   "id": "d11-09",
+   "ch": 11,
+   "type": "choice",
+   "q": "I don't ___ the answer. (я не знаю)",
+   "options": [
+    "know",
+    "now",
+    "no",
+    "knew"
+   ],
+   "answer": "know",
+   "why": "know = знать (k не читается). now = сейчас. Ловушка на слух. Ошибка из занятия: «I don't now».",
+   "mine": true
+  },
+  {
+   "id": "d11-10",
+   "ch": 11,
+   "type": "choice",
+   "q": "I'm making ___. (английский словарь)",
+   "options": [
+    "an English dictionary",
+    "dictionary of English",
+    "dictionary English",
+    "a English dictionary"
+   ],
+   "answer": "an English dictionary",
+   "why": "Определение ставим перед словом: English dictionary. English начинается с гласного звука: an.",
+   "mine": true,
+   "prompt": "Как сказать «английский словарь»?"
+  }
+ ]
+}
