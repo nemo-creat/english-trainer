@@ -156,3 +156,12 @@ label.field { display: block; margin: 14px 0 6px; font-weight: 600; }
 .diag-h { font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--bad); margin-bottom: 4px; font-weight: 700; }
 .diag-i { font-size: 16px; margin: 2px 0; }
 .wchip { display: inline-block; margin: 0 6px 6px 0; padding: 4px 10px; font-size: 14px; color: var(--text); }
+
+/* лестница слов, пакеты, отчёт */
+.ladder { margin-top: 14px; }
+.ladder-bar { display: flex; height: 10px; border-radius: 6px; overflow: hidden; background: #1c2538; }
+.ladder-bar i { display: block; height: 100%; }
+.ladder-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; font-size: 13px; color: var(--muted); }
+.pack { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--line); }
+.pack input { width: 22px; height: 22px; margin-top: 2px; flex-shrink: 0; }
+#report { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 10px; }

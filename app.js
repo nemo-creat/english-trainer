@@ -123,7 +123,31 @@
     return n;
   }
 
-  function buildQueue(cards, state, day, newLimit) {
+  // Пакет включён, если у карточки нет пакета или он не выключен в настройках
+  function packOn(card, packs) {
+    return !card.pack || !packs || packs[card.pack] !== false;
+  }
+
+  var LADDER = ['Новое', 'Увидел', 'Узнаю', 'Вспомню', 'Соберу', 'Закреплено'];
+  // Ступень слова 0..5. «Соберу» и выше — только если слово использовано в собранных предложениях
+  function ladder(card, rec, usedN) {
+    if (!rec) return 0;
+    if (rec.stage <= 0) return 1;
+    if (rec.stage === 1) return 2;
+    if (rec.stage >= 4 && (usedN || 0) >= 2) return 5;
+    if (rec.stage >= 2 && (usedN || 0) >= 1) return 4;
+    return 3;
+  }
+  function ladderCounts(cards, state, packs) {
+    var res = [0, 0, 0, 0, 0, 0];
+    cards.forEach(function (c) {
+      if ((c.type !== 'word' && c.type !== 'phrase') || !packOn(c, packs)) return;
+      res[ladder(c, state.cards[c.id], (state.used || {})[c.id])]++;
+    });
+    return res;
+  }
+
+  function buildQueue(cards, state, day, newLimit, isOn) {
     var rec = function (c) { return state.cards[c.id]; };
     var newToday = cards.filter(function (c) { return rec(c) && rec(c).first === day; }).length;
     var due = cards.filter(function (c) { return rec(c) && rec(c).due <= day; });
@@ -131,7 +155,7 @@
       return rec(a).due.localeCompare(rec(b).due) || rec(a).stage - rec(b).stage;
     });
     var room = Math.max(0, newLimit - newToday);
-    var pool = cards.filter(function (c) { return !rec(c); });
+    var pool = cards.filter(function (c) { return !rec(c) && (!isOn || isOn(c)); });
     return { due: due, fresh: pool.slice(0, room), newToday: newToday, newLeft: pool.length };
   }
 
@@ -152,7 +176,8 @@
       extra: (s && s.extra) || {},
       drills: (s && s.drills) || {},   // прогресс упражнений по правилам: id -> {ok, bad, last}
       train: (s && s.train) || {},     // прогресс тренажёров слов: id -> {ok, bad, last}
-      weak: (s && s.weak) || {}        // слабые места: 'r:<глава>' или 'w:<слово>' -> {k, ch, w, bad, ok, last, ex}
+      weak: (s && s.weak) || {},       // слабые места: 'r:<глава>' или 'w:<слово>' -> {k, ch, w, bad, ok, last, ex}
+      used: (s && s.used) || {}        // сколько раз слово использовано в собранных предложениях: id -> n
     };
   }
 
@@ -389,9 +414,58 @@
       .sort(function (a, b) { return b.score - a.score || b.e.last.localeCompare(a.e.last); });
   }
 
+  // Текст «Отчёт для Claude»: его вставляют в чат в начале урока
+  function buildReport(o) {
+    var st = o.state, day = o.day, cards = o.cards, L = [];
+    var words = cards.filter(function (c) { return (c.type === 'word' || c.type === 'phrase') && packOn(c, o.packs); });
+    var counts = ladderCounts(cards, st, o.packs);
+    var due = cards.filter(function (c) { return st.cards[c.id] && st.cards[c.id].due <= day; }).length;
+    var active = words.filter(function (c) { return ladder(c, st.cards[c.id], (st.used || {})[c.id]) >= 3; })
+      .sort(function (a, b) { return (st.cards[b.id].first || '').localeCompare(st.cards[a.id].first || ''); }).slice(0, 30);
+    var days7 = 0, d0 = new Date(day + 'T00:00:00');
+    for (var i = 0; i < 7; i++) {
+      var dd = new Date(d0.getTime() - i * 86400000), key = dd.getFullYear() + '-' + ('0' + (dd.getMonth() + 1)).slice(-2) + '-' + ('0' + dd.getDate()).slice(-2);
+      if ((st.days || {})[key]) days7++;
+    }
+    L.push('ОТЧЁТ ТРЕНАЖЁРА · ' + day);
+    L.push('Серия: ' + streak(st.days || {}, day) + ' дн. подряд; за последние 7 дней занимался в ' + days7 + ' из 7.');
+    L.push('Слова по ступеням: ' + LADDER.map(function (n, i) { return n + ' ' + counts[i]; }).join(' | ') + '.');
+    L.push('К повтору сегодня: ' + due + '.');
+    var wl = weakList(st.weak || {});
+    var rules = wl.filter(function (x) { return x.e.k === 'r'; }).slice(0, 5);
+    var wds = wl.filter(function (x) { return x.e.k === 'w'; }).slice(0, 8);
+    L.push('');
+    L.push('Слабые правила (по главам учебника):');
+    if (!rules.length) L.push('  — пока нет данных.');
+    rules.forEach(function (x) {
+      var ex = (x.e.ex || []).slice(-2).map(function (e) { return (e.got || '—') + ' → ' + (e.want || '—'); }).join('; ');
+      L.push('  — гл. ' + x.e.ch + ' ' + ((o.chapters || {})[x.e.ch] || '') + ': ошибок ' + x.e.bad + (ex ? ' (' + ex + ')' : ''));
+    });
+    L.push('Слабые слова:');
+    if (!wds.length) L.push('  — пока нет данных.');
+    wds.forEach(function (x) {
+      var last = (x.e.ex || []).slice(-1)[0];
+      L.push('  — ' + x.e.w + ': ошибок ' + x.e.bad + (last && last.got ? ' (' + (last.t === 'spell' ? 'написание' : 'не то слово') + ': ' + last.got + ' → ' + last.want + ')' : ''));
+    });
+    L.push('');
+    L.push('Активные слова (ступень «Вспомню» и выше, последние ' + active.length + '): ' + (active.map(function (c) { return c.en; }).join('; ') || '—'));
+    var packs = o.packMeta || {};
+    var pk = Object.keys(packs).map(function (id) {
+      var all = cards.filter(function (c) { return c.pack === id; });
+      var on = !o.packs || o.packs[id] !== false;
+      var seen = all.filter(function (c) { return st.cards[c.id]; }).length;
+      return packs[id].title + (on ? '' : ' (выключен)') + ': ' + seen + '/' + all.length;
+    });
+    if (pk.length) L.push('Пакеты: ' + pk.join('; ') + '.');
+    L.push('');
+    L.push('Прошу: проведи урок с упором на слабые места и активные слова; ошибки разбирай как раньше.');
+    return L.join('\n');
+  }
+
   var pure = {
     shuffle: shuffle, pickWeighted: pickWeighted, makeChoices: makeChoices, makeTiles: makeTiles,
     checkBuild: checkBuild, chapterStats: chapterStats,
+    packOn: packOn, ladder: ladder, ladderCounts: ladderCounts, LADDER: LADDER, buildReport: buildReport,
     diagnose: diagnose, setKnown: setKnown, canon: canon, noteIssuesTo: noteIssuesTo, noteOkTo: noteOkTo, weakList: weakList, issueKey: issueKey, expand: expand, stem: stem,
     INTERVALS: INTERVALS, addDays: addDays, daysBetween: daysBetween, applyRating: applyRating,
     norm: norm, lev: lev, checkText: checkText, wordDiff: wordDiff, streak: streak,
@@ -405,7 +479,9 @@
   var cards = [];
   var meta = {};
   var state = normalizeState(loadJSON(LS.progress, null));
-  var settings = Object.assign({ newPerDay: 10, rate: 0.9 }, loadJSON(LS.settings, {}));
+  var settings = Object.assign({ newPerDay: 10, rate: 0.9, packs: {} }, loadJSON(LS.settings, {}));
+  if (!settings.packs || typeof settings.packs !== 'object') settings.packs = {};
+  function isOn(c) { return packOn(c, settings.packs); }
   var view = 'home';
   var session = null;
   var libQuery = '';
@@ -552,12 +628,24 @@
     return h;
   }
 
+  function ladderHTML() {
+    var c = ladderCounts(cards, state, settings.packs);
+    var total = c.reduce(function (a, b) { return a + b; }, 0);
+    if (!total) return '';
+    var bar = '', cols = ['#33445f', '#3b6d8c', '#2f8fb5', '#2fb39a', '#7cc66d', '#e0b84c'];
+    c.forEach(function (n, i) { if (n) bar += '<i style="width:' + (n / total * 100) + '%;background:' + cols[i] + '"></i>'; });
+    var h = '<div class="ladder"><div class="ladder-bar">' + bar + '</div><div class="ladder-legend">';
+    c.forEach(function (n, i) { h += '<span><b style="color:' + cols[i] + '">●</b> ' + LADDER[i] + ' ' + n + '</span>'; });
+    return h + '</div></div>';
+  }
+
   function homeHTML() {
     var day = today();
     var limit = settings.newPerDay + (state.extra[day] || 0);
-    var plan = buildQueue(cards, state, day, limit);
+    var plan = buildQueue(cards, state, day, limit, isOn);
     var total = plan.due.length + plan.fresh.length;
-    var learned = cards.filter(function (c) { return state.cards[c.id] && state.cards[c.id].stage >= 3; }).length;
+    var active = cards.filter(isOn);
+    var learned = active.filter(function (c) { return state.cards[c.id] && state.cards[c.id].stage >= 3; }).length;
     var st = streak(state.days, day);
     var h = '<div class="topbar"><div><h1>English Trainer</h1><div class="muted small">Слова и фразы из наших занятий</div></div>' +
       '<div class="badge">🔥 ' + st + '</div></div>';
@@ -565,7 +653,7 @@
     h += '<div class="panel"><div class="stats">' +
       '<div class="stat"><b>' + plan.due.length + '</b><span>повторить</span></div>' +
       '<div class="stat"><b>' + plan.fresh.length + '</b><span>новых сегодня</span></div>' +
-      '<div class="stat"><b>' + learned + '/' + cards.length + '</b><span>выучено</span></div></div></div>';
+      '<div class="stat"><b>' + learned + '/' + active.length + '</b><span>выучено</span></div></div>' + ladderHTML() + '</div>';
 
     if (total > 0) {
       h += '<button class="btn primary" data-act="start">Начать · ' + total + ' карточек</button>';
@@ -703,12 +791,47 @@
       var title = c.type === 'rule' ? c.front : c.type === 'cloze' ? c.text.replace('___', '[' + c.answer + ']') : c.en;
       var sub = c.type === 'rule' ? c.back : c.ru || '';
       h += '<div class="list-item"><div class="line"><div class="en">' + esc(title) + '<span class="chip">' + esc(c.type) + '</span></div>' +
-        '<div class="small muted">' + esc(dueLabel(rec, day)) + '</div></div>' +
+        '<div class="small muted">' + (c.type === 'word' || c.type === 'phrase' ? esc(LADDER[ladder(c, rec, state.used[c.id])]) + ' · ' : '') + esc(dueLabel(rec, day)) + '</div></div>' +
         '<div class="muted small">' + esc(String(sub).replace(/\n/g, ' ')) + '</div>' +
         '<div class="dots">' + stageDots(rec ? rec.stage : 0) + '</div></div>';
     });
     if (!list.length) h += '<p class="muted center">Ничего не найдено</p>';
     return h + '</div>';
+  }
+
+  function packsPanelHTML() {
+    var packs = meta.packs || {}, ids = Object.keys(packs);
+    if (!ids.length) return '';
+    var h = '<div class="panel"><h2>Пакеты слов</h2><p class="muted small">Выключенный пакет не даёт новых карточек (уже начатые повторяются). Включай по одному, чтобы не перегружаться.</p>';
+    ids.forEach(function (id) {
+      var all = cards.filter(function (c) { return c.pack === id; });
+      var seen = all.filter(function (c) { return state.cards[c.id]; }).length;
+      h += '<label class="pack"><input type="checkbox" data-pack="' + esc(id) + '"' + (settings.packs[id] !== false ? ' checked' : '') + '>' +
+        '<span><b>' + esc(packs[id].title) + '</b> <span class="chip">' + seen + '/' + all.length + '</span><br><span class="muted small">' + esc(packs[id].desc || '') + '</span></span></label>';
+    });
+    return h + '</div>';
+  }
+
+  function reportText() {
+    return buildReport({ state: state, day: today(), cards: cards, packs: settings.packs, packMeta: meta.packs || {}, chapters: drillData.chapters || {} });
+  }
+  function reportHTML() {
+    return '<div class="topbar"><button class="icon-btn" data-act="home" aria-label="Назад">←</button><h2 style="margin:0">Отчёт для Claude</h2><span></span></div>' +
+      '<div class="panel"><p class="muted small">Нажми «Скопировать» и вставь в чат с Claude в начале урока. Так он увидит твои слабые места и слова.</p>' +
+      '<textarea id="report" readonly rows="16" style="width:100%">' + esc(reportText()) + '</textarea>' +
+      '<button class="btn primary" data-act="copyreport" style="margin-top:10px">Скопировать</button></div>';
+  }
+  function copyReport() {
+    var text = reportText();
+    function fallback() {
+      var ta = document.getElementById('report');
+      if (!ta) return;
+      ta.focus(); ta.select();
+      try { document.execCommand('copy'); toast('Скопировано'); } catch (e) { toast('Выдели текст и скопируй вручную'); }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { toast('Скопировано'); }, fallback);
+    } else fallback();
   }
 
   function settingsHTML() {
@@ -726,8 +849,9 @@
       h += '<p class="muted small" style="margin-top:12px">Озвучка в этом браузере недоступна.</p>';
     }
     h += '</div>';
+    h += packsPanelHTML();
     h += '<div class="panel"><h2>Прогресс</h2><p class="muted small">Прогресс хранится в браузере телефона. Если очистить данные Chrome, он пропадёт — сохраняй копию.</p>' +
-      '<div class="stack"><button class="btn" data-act="export">Сохранить копию прогресса</button>' +
+      '<div class="stack"><button class="btn" data-act="report">📋 Отчёт для Claude</button><button class="btn" data-act="export">Сохранить копию прогресса</button>' +
       '<label class="btn" style="cursor:pointer">Загрузить копию<input type="file" id="imp" accept="application/json,.json" hidden></label>' +
       '<button class="btn ghost" data-act="reload">Проверить новые карточки</button>' +
       '<button class="btn bad small" data-act="reset">Сбросить весь прогресс</button></div></div>';
@@ -741,6 +865,7 @@
     else if (view === 'session') { root.innerHTML = sessionHTML(); afterSessionRender(); }
     else if (view === 'library') root.innerHTML = libraryHTML();
     else if (view === 'settings') root.innerHTML = settingsHTML();
+    else if (view === 'report') root.innerHTML = reportHTML();
     else if (view === 'train') root.innerHTML = trainHTML();
     else if (view === 'tsession') { root.innerHTML = tsessionHTML(); afterTsessionRender(); }
     try { window.scrollTo(0, 0); } catch (e) { /* не критично */ }
@@ -759,7 +884,7 @@
   function startSession() {
     var day = today();
     var limit = settings.newPerDay + (state.extra[day] || 0);
-    var plan = buildQueue(cards, state, day, limit);
+    var plan = buildQueue(cards, state, day, limit, isOn);
     var items = plan.due.concat(plan.fresh).map(function (c) {
       return { card: c, mode: modeFor(c, state.cards[c.id], day, ttsOk), tries: 0 };
     });
@@ -859,6 +984,7 @@
   var WORD_KINDS = [
     { kind: 'en2ru', icon: '🇬🇧', title: 'Выбери перевод', sub: 'слово по-английски → выбери русский перевод' },
     { kind: 'ru2en', icon: '🇷🇺', title: 'Выбери слово', sub: 'слово по-русски → выбери английское' },
+    { kind: 'sentence', icon: '🧩', title: 'Собери предложение', sub: 'пример с твоей фразой: собери из слов по русскому' },
     { kind: 'assemble', icon: '🔤', title: 'Собери слово или фразу', sub: 'из букв и слов по русской подсказке' },
     { kind: 'typeword', icon: '⌨️', title: 'Напиши слово', sub: 'русское слово → напиши по-английски (проверка написания)' },
     { kind: 'listen', icon: '🎧', title: 'Аудио-квиз', sub: 'послушай и выбери, что услышал', needTts: true },
@@ -900,6 +1026,16 @@
       it.q = c.ru; it.prompt = 'Выбери по-английски'; it.options = makeChoices(c, pool, 'en');
     } else if (kind === 'listen') {
       it.q = '🔊'; it.speak = c.en; it.autoSpeak = true; it.prompt = 'Послушай и выбери, что услышал'; it.options = makeChoices(c, pool, 'en');
+    } else if (kind === 'sentence') {
+      it.kind = 'build'; it.ru = c.exRu; it.answer = c.ex; it.byLetters = false;
+      var foreign = pool.filter(function (x) { return x.id !== c.id && x.ex; });
+      var extraTok = [];
+      if (foreign.length) {
+        var toks = foreign[Math.floor(Math.random() * foreign.length)].ex.replace(/[.,!?]/g, '').split(/\s+/).filter(function (w) { return c.ex.toLowerCase().indexOf(w.toLowerCase()) === -1; });
+        if (toks.length) extraTok = [toks[Math.floor(Math.random() * toks.length)]];
+      }
+      it.tiles = makeTiles(c.ex, extraTok, false); it.picked = [];
+      it.prompt = 'Собери предложение со своей фразой «' + c.en.replace(/[.?!]$/, '') + '»';
     } else if (kind === 'typeword') {
       it.kind = 'type'; it.ru = c.ru; it.alts = c.alts || []; it.prompt = 'Напиши по-английски';
     } else if (kind === 'assemble') {
@@ -968,6 +1104,11 @@
     } else {
       var src = wordSource(), pool = wordPool();
       if (kind === 'assemble') src = src.filter(assembleOk);
+      if (kind === 'sentence') {
+        src = src.filter(function (c) { return c.ex && c.exRu; });
+        var seenSrc = src.filter(function (c) { return state.cards[c.id]; });
+        if (seenSrc.length >= 5) src = seenSrc;
+      }
       if (kind === 'pairs') {
         var pk = pickWeighted(src, state.train, 12);
         for (var i = 0; i < pk.length; i += 6) if (pk.length - i >= 3) items.push(pairsItem(pk.slice(i, i + 6)));
@@ -1009,7 +1150,7 @@
     } else {
       var c = it.card;
       if (it.kind === 'build' || it.kind === 'type') {
-        if (given) issues = diagnose(given, [c.en].concat(c.alts || []), known()).issues;
+        if (given) issues = diagnose(given, it.origKind === 'sentence' ? [c.ex] : [c.en].concat(c.alts || []), known()).issues;
       }
       if (!issues.length) issues = [wordIssue(c)];
     }
@@ -1030,6 +1171,7 @@
           : 'w:' + it.card.en.toLowerCase());
       }
     }
+    if (ok && it.origKind === 'sentence' && !it.counted) { state.used[it.card.id] = (state.used[it.card.id] || 0) + 1; saveState(); }
     record(it, ok);
     ts.step = 'result';
     render();
@@ -1151,6 +1293,7 @@
       '<div style="flex:1"><h1>Тренажёры</h1><div class="muted small">Отдельно от карточек: прогресс карточек не меняется</div></div></div>';
 
     h += weakPanelHTML();
+    h += '<button class="btn" data-act="report" style="margin-bottom:12px">📋 Отчёт для Claude</button>';
     var drills = drillData.drills || [];
     var cs = chapterStats(drills, state.drills);
     var mineCount = drills.filter(function (d) { return d.mine; }).length;
@@ -1326,6 +1469,8 @@
         break;
       case 'home': view = 'home'; session = null; ts = null; render(); break;
       case 'train': view = 'train'; ts = null; render(); break;
+      case 'report': view = 'report'; render(); break;
+      case 'copyreport': copyReport(); break;
       case 'tstart': startTraining(el.getAttribute('data-kind'), el.getAttribute('data-ch')); break;
       case 'tpick': tPick(parseInt(el.getAttribute('data-i'), 10)); break;
       case 'ttile': tTile(parseInt(el.getAttribute('data-i'), 10)); break;
@@ -1388,6 +1533,10 @@
       settings.newPerDay = parseInt(e.target.value, 10);
       saveJSON(LS.settings, settings);
       toast('Сохранено');
+    } else if (e.target.getAttribute && e.target.getAttribute('data-pack')) {
+      settings.packs[e.target.getAttribute('data-pack')] = e.target.checked;
+      saveJSON(LS.settings, settings);
+      toast(e.target.checked ? 'Пакет включён' : 'Пакет выключен');
     } else if (e.target.id === 'imp') {
       importProgress(e.target.files && e.target.files[0]);
     }
