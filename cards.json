@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-14",
+ "updated": "2026-11-15",
  "cards": [
   {
    "id": "w-software",
@@ -18,7 +18,10 @@
    "lesson": "2026-11-12",
    "en": "Nice to meet you too.",
    "ru": "Мне тоже приятно познакомиться.",
-   "note": "See you = «до встречи», это при прощании. При знакомстве: Nice to meet you."
+   "note": "See you = «до встречи», это при прощании. При знакомстве: Nice to meet you.",
+   "alts": [
+    "Nice to meet you."
+   ]
   },
   {
    "id": "c-shows",
@@ -55,7 +58,11 @@
    "ru": "Я сейчас работаю над программой Imabu.",
    "note": "I'm + глагол-ing = делаю прямо сейчас.",
    "alts": [
-    "I am working on Imabu software right now."
+    "I am working on Imabu software right now.",
+    "I'm working on Imabu right now.",
+    "Now I'm working on Imabu software.",
+    "Right now I'm working on Imabu software.",
+    "I'm working on Imabu now."
    ]
   },
   {
@@ -89,7 +96,12 @@
    "type": "phrase",
    "lesson": "2026-11-12",
    "en": "My software helps sellers on Wildberries and Ozon.",
-   "ru": "Моя программа помогает продавцам на Wildberries и Ozon."
+   "ru": "Моя программа помогает продавцам на Wildberries и Ozon.",
+   "alts": [
+    "My software helps sellers on Ozon and Wildberries.",
+    "My program helps sellers on Wildberries and Ozon.",
+    "My program helps sellers on Ozon and Wildberries."
+   ]
   },
   {
    "id": "c-uses",
@@ -124,7 +136,12 @@
    "lesson": "2026-11-12",
    "en": "My software shows all of this.",
    "ru": "Моя программа показывает всё это.",
-   "note": "Не make, а show: «показывает». И software + глагол-s: shows."
+   "note": "Не make, а show: «показывает». И software + глагол-s: shows.",
+   "alts": [
+    "My software shows all this.",
+    "My software shows everything.",
+    "My program shows all of this."
+   ]
   },
   {
    "id": "c-working",
@@ -479,7 +496,10 @@
    "type": "phrase",
    "lesson": "2026-11-13",
    "en": "How was your day today?",
-   "ru": "Как прошёл твой день сегодня?"
+   "ru": "Как прошёл твой день сегодня?",
+   "alts": [
+    "How was your day?"
+   ]
   },
   {
    "id": "c-worked",
@@ -513,7 +533,12 @@
    "lesson": "2026-11-13",
    "en": "My day was normal.",
    "ru": "Мой день был обычным.",
-   "note": "Вечер, день уже прошёл: was, а не is."
+   "note": "Вечер, день уже прошёл: was, а не is.",
+   "alts": [
+    "My day was OK.",
+    "My day was okay.",
+    "My day was fine."
+   ]
   },
   {
    "id": "c-was",
@@ -551,7 +576,12 @@
    "lesson": "2026-11-13",
    "en": "Today I worked on Imabu.",
    "ru": "Сегодня я работал над Imabu.",
-   "note": "Прошедшее время: work → worked (+ed)."
+   "note": "Прошедшее время: work → worked (+ed).",
+   "alts": [
+    "I worked on Imabu today.",
+    "Today I worked on Imabu software.",
+    "I worked on Imabu software today."
+   ]
   },
   {
    "id": "c-because",
@@ -620,7 +650,12 @@
    "lesson": "2026-11-13",
    "en": "Today I fixed small bugs.",
    "ru": "Сегодня я исправил небольшие баги.",
-   "note": "bug (баг) ≠ bag (сумка)."
+   "note": "bug (баг) ≠ bag (сумка).",
+   "alts": [
+    "I fixed small bugs today.",
+    "Today I fixed some small bugs.",
+    "I fixed some small bugs today."
+   ]
   },
   {
    "id": "c-better",
@@ -684,7 +719,10 @@
    "lesson": "2026-11-13",
    "en": "I like making software better.",
    "ru": "Мне нравится делать программу лучше.",
-   "note": "После like глагол с -ing: I like making."
+   "note": "После like глагол с -ing: I like making.",
+   "alts": [
+    "I like to make software better."
+   ]
   },
   {
    "id": "c-intheend",
@@ -710,7 +748,10 @@
    "type": "phrase",
    "lesson": "2026-11-13",
    "en": "I want to add a new chart.",
-   "ru": "Я хочу добавить новый график."
+   "ru": "Я хочу добавить новый график.",
+   "alts": [
+    "I want to add a new graph."
+   ]
   },
   {
    "id": "w-add",
@@ -784,7 +825,10 @@
    "type": "phrase",
    "lesson": "2026-11-14",
    "en": "I like the app.",
-   "ru": "Мне нравится приложение."
+   "ru": "Мне нравится приложение.",
+   "alts": [
+    "I like this app."
+   ]
   },
   {
    "id": "p-firstimpression",

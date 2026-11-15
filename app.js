@@ -55,10 +55,28 @@
     return prev[b.length];
   }
 
-  // 'ok' | 'close' (опечатка в одном слове) | 'bad' | 'empty'
+  // Каноническая форма для сравнения: I'm = I am, don't = do not, right now = now, every day = daily
+  function canon(s) {
+    return expandContractions(norm(s))
+      .replace(/\bright now\b/g, 'now').replace(/\bat the moment\b/g, 'now')
+      .replace(/\bevery day\b/g, 'daily')
+      .replace(/\s+/g, ' ').trim();
+  }
+  function expandContractions(t) {
+    return t.replace(/\bwon't\b/g, 'will not').replace(/\bcan't\b/g, 'can not')
+      .replace(/\b(\w+)n't\b/g, '$1 not')
+      .replace(/\bi'm\b/g, 'i am').replace(/\b(\w+)'re\b/g, '$1 are').replace(/\b(\w+)'ll\b/g, '$1 will')
+      .replace(/\b(he|she|it|that|there|what)'s\b/g, '$1 is').replace(/\b(\w+)'ve\b/g, '$1 have');
+  }
+
+  var knownRef = null; // известные приложению слова: отличает опечатку от другого слова
+  function setKnown(m) { knownRef = m; }
+
+  // 'ok' | 'close' (опечатка в слове, ответ по смыслу верный) | 'bad' | 'empty'
   function checkText(input, targets, allowTypo) {
     var g = norm(input);
     if (!g) return 'empty';
+    var gc = canon(input);
     var list = [];
     targets.forEach(function (t) {
       var n = norm(t);
@@ -66,10 +84,16 @@
       if (n.indexOf('to ') === 0) list.push(n.slice(3));
     });
     if (list.indexOf(g) !== -1) return 'ok';
+    for (var k = 0; k < list.length; k++) if (canon(list[k]) === gc) return 'ok';
     if (allowTypo) {
       for (var i = 0; i < list.length; i++) {
         var t = list[i];
         if (t.length >= 6 && t.indexOf(' ') === -1 && g.indexOf(' ') === -1 && lev(g, t) <= 1) return 'close';
+      }
+      // предложение: верно по смыслу, но в 1–2 словах опечатка
+      if (gc.indexOf(' ') !== -1) {
+        var d = diagnose(input, targets, knownRef);
+        if (d.issues.length >= 1 && d.issues.length <= 2 && d.issues.every(function (x) { return x.t === 'spell'; })) return 'close';
       }
     }
     return 'bad';
@@ -209,18 +233,13 @@
   }
 
   function expand(s) {
-    var t = norm(s);
-    t = t.replace(/\bwon't\b/g, 'will not').replace(/\bcan't\b/g, 'can not')
-      .replace(/\b(\w+)n't\b/g, '$1 not')
-      .replace(/\bi'm\b/g, 'i am').replace(/\b(\w+)'re\b/g, '$1 are').replace(/\b(\w+)'ll\b/g, '$1 will')
-      .replace(/\b(he|she|it|that|there|what)'s\b/g, '$1 is').replace(/\b(\w+)'ve\b/g, '$1 have');
-    return t.split(' ').filter(Boolean);
+    return canon(s).split(' ').filter(Boolean);
   }
 
   function stem(w) {
     var s = w;
     if (s.length > 4 && /(ies|ied)$/.test(s)) s = s.slice(0, -3) + 'y';
-    else s = s.replace(/(ing|est|er|ed|es|s|d)$/, '');
+    else s = s.replace(/(ing|est|er|ed|es|s)$/, '');
     if (s.length >= 3 && /(.)\1$/.test(s)) s = s.slice(0, -1);
     return s.replace(/e$/, '');
   }
@@ -373,7 +392,7 @@
   var pure = {
     shuffle: shuffle, pickWeighted: pickWeighted, makeChoices: makeChoices, makeTiles: makeTiles,
     checkBuild: checkBuild, chapterStats: chapterStats,
-    diagnose: diagnose, noteIssuesTo: noteIssuesTo, noteOkTo: noteOkTo, weakList: weakList, issueKey: issueKey, expand: expand, stem: stem,
+    diagnose: diagnose, setKnown: setKnown, canon: canon, noteIssuesTo: noteIssuesTo, noteOkTo: noteOkTo, weakList: weakList, issueKey: issueKey, expand: expand, stem: stem,
     INTERVALS: INTERVALS, addDays: addDays, daysBetween: daysBetween, applyRating: applyRating,
     norm: norm, lev: lev, checkText: checkText, wordDiff: wordDiff, streak: streak,
     buildQueue: buildQueue, modeFor: modeFor, normalizeState: normalizeState, fmtDate: fmtDate
@@ -564,7 +583,7 @@
     if (plan.newLeft - plan.fresh.length > 0) {
       h += '<button class="btn ghost" data-act="extra">+ Ещё 10 новых (' + (plan.newLeft - plan.fresh.length) + ' осталось)</button>';
     }
-    var weakN = weakList(state.weak).length;
+    var weakN = visibleWeak().length;
     if (weakN) h += '<button class="btn" data-act="tstart" data-kind="weak">🎯 Слабые места: ' + weakN + ' — отработать</button>';
     h += '<button class="btn" data-act="train">🏋️ Тренажёры: правила и слова</button>';
     h += '<div class="row"><button class="btn" data-act="library">Все карточки</button>' +
@@ -777,7 +796,8 @@
     var item = session.queue[0];
     var card = item.card;
     var targets = item.mode === 'cloze' ? [card.answer].concat(card.alts || []) : [card.en].concat(card.alts || []);
-    var status = checkText(text, targets, item.mode !== 'cloze' && card.type === 'word');
+    known();
+    var status = checkText(text, targets, item.mode !== 'cloze');
     if (status === 'empty') { toast('Напиши ответ или нажми «Не знаю»'); return; }
     var diag = null;
     if (status !== 'ok') {
@@ -793,12 +813,13 @@
   var knownCache = null;
   function known() {
     var n = cards.length + (drillData.drills || []).length;
-    if (knownCache && knownCache.n === n) return knownCache.map;
+    if (knownCache && knownCache.n === n) { setKnown(knownCache.map); return knownCache.map; }
     var map = {};
     function add(s) { expand(String(s || '')).forEach(function (w) { map[w] = 1; }); }
     cards.forEach(function (c) { add(c.en); add(c.ex); add(c.text); add(c.answer); });
     (drillData.drills || []).forEach(function (d) { add(d.q); add(d.answer); (d.options || []).forEach(add); });
     knownCache = { n: n, map: map };
+    setKnown(map);
     return map;
   }
   function chName(ch) { return drillData.chapters && drillData.chapters[ch] ? drillData.chapters[ch] : ''; }
@@ -897,9 +918,28 @@
     };
   }
 
+  // Чем отрабатывать слабое слово: упражнения на написание / карточка. Без материала слово не показываем.
+  function weakMaterial(w) {
+    var pool = wordPool();
+    var dl = (drillData.drills || []).filter(function (d) {
+      return (d.cat === 'spell' || d.cat === 'word') && expand(d.answer).indexOf(w) !== -1;
+    });
+    var card = pool.filter(function (c) { return c.en.toLowerCase() === w; })[0] ||
+      pool.filter(function (c) { return expand(c.en).indexOf(w) !== -1; })[0] ||
+      pool.filter(function (c) { return stem(c.en.toLowerCase()) === stem(w); })[0];
+    return { dl: dl, card: card };
+  }
+  function visibleWeak() {
+    return weakList(state.weak).filter(function (x) {
+      if (x.e.k === 'r') return true;
+      var m = weakMaterial(x.e.w);
+      return m.dl.length > 0 || !!m.card;
+    });
+  }
+
   // Сессия по слабым местам: самые проблемные правила (по главам) + самые проблемные слова
   function buildWeakItems() {
-    var wl = weakList(state.weak), items = [];
+    var wl = visibleWeak(), items = [];
     var rules = wl.filter(function (x) { return x.e.k === 'r'; }).slice(0, 3);
     var words = wl.filter(function (x) { return x.e.k === 'w'; }).slice(0, 5);
     var pool = wordPool();
@@ -908,13 +948,7 @@
       pickWeighted(list, state.drills, 4).forEach(function (d) { items.push(drillItem(d)); });
     });
     words.forEach(function (x) {
-      var w = x.e.w;
-      var dl = (drillData.drills || []).filter(function (d) {
-        return (d.cat === 'spell' || d.cat === 'word') && expand(d.answer).indexOf(w) !== -1;
-      });
-      var card = pool.filter(function (c) { return c.en.toLowerCase() === w; })[0] ||
-        pool.filter(function (c) { return expand(c.en).indexOf(w) !== -1; })[0] ||
-        pool.filter(function (c) { return stem(c.en.toLowerCase()) === stem(w); })[0];
+      var m = weakMaterial(x.e.w), dl = m.dl, card = m.card;
       if (dl.length) items.push(drillItem(pickWeighted(dl, state.drills, 1)[0]));
       if (card) items.push(wordItem('typeword', card, pool));
     });
@@ -925,7 +959,7 @@
     var items = [], list;
     if (kind === 'weak') {
       items = buildWeakItems();
-      if (!items.length) { toast(weakList(state.weak).length ? 'Для этих слабых мест пока нет упражнений' : 'Слабых мест пока нет 👍'); return; }
+      if (!items.length) { toast(visibleWeak().length ? 'Для этих слабых мест пока нет упражнений' : 'Слабых мест пока нет 👍'); return; }
     } else if (kind === 'rules' || kind === 'mistakes' || kind === 'chapter') {
       list = drillData.drills;
       if (kind === 'mistakes') list = list.filter(function (d) { return d.mine; });
@@ -982,13 +1016,19 @@
     return issues;
   }
 
-  function finishItem(it, ok, given, idx) {
-    it.result = { ok: ok, given: given, idx: idx };
-    it.diag = diagForItem(it, ok, given);
-    if (!it.counted) {
-      if (!ok) noteIssues(it.diag);
-      else noteOk(it.store === 'drills' ? ((it.d.cat || 'rule') === 'rule' ? 'r:' + it.d.ch : 'w:' + String(it.answer).toLowerCase())
-        : 'w:' + it.card.en.toLowerCase());
+  function finishItem(it, ok, given, idx, close) {
+    it.result = { ok: ok, given: given, idx: idx, close: !!close };
+    if (close) {
+      var targets = it.kind === 'type' && it.store === 'train' ? [it.card.en].concat(it.card.alts || []) : [it.answer].concat(it.alts || []);
+      it.diag = diagnose(given, targets, known()).issues.filter(function (i) { return i.t === 'spell'; });
+      if (!it.counted && it.diag.length) noteIssues(it.diag);
+    } else {
+      it.diag = diagForItem(it, ok, given);
+      if (!it.counted) {
+        if (!ok) noteIssues(it.diag);
+        else noteOk(it.store === 'drills' ? ((it.d.cat || 'rule') === 'rule' ? 'r:' + it.d.ch : 'w:' + String(it.answer).toLowerCase())
+          : 'w:' + it.card.en.toLowerCase());
+      }
     }
     record(it, ok);
     ts.step = 'result';
@@ -1003,9 +1043,10 @@
   function tTypeSubmit(text) {
     var it = ts && ts.items[0];
     if (!it || ts.step !== 'ask') return;
-    var status = checkText(text, [it.answer].concat(it.alts || []), false);
+    known();
+    var status = checkText(text, [it.answer].concat(it.alts || []), true);
     if (status === 'empty') { toast('Напиши ответ или нажми «Не знаю»'); return; }
-    finishItem(it, status === 'ok', text.trim());
+    finishItem(it, status !== 'bad', text.trim(), undefined, status === 'close');
   }
   function tTile(i) {
     var it = ts && ts.items[0];
@@ -1080,7 +1121,7 @@
   }
 
   function weakPanelHTML() {
-    var wl = weakList(state.weak);
+    var wl = visibleWeak();
     if (!wl.length) return '';
     var rules = wl.filter(function (x) { return x.e.k === 'r'; }).slice(0, 4);
     var words = wl.filter(function (x) { return x.e.k === 'w'; }).slice(0, 6);
@@ -1144,10 +1185,11 @@
 
   function resultBlock(it) {
     var r = it.result, h = '';
-    h += '<div class="res ' + (r.ok ? 'ok' : 'bad') + '" style="margin-top:14px">' +
-      (r.ok ? '✅ Верно!' : '❌ Верный ответ: <b>' + esc(it.answer) + '</b>') +
+    h += '<div class="res ' + (r.close ? 'close' : r.ok ? 'ok' : 'bad') + '" style="margin-top:14px">' +
+      (r.close ? '🟡 Засчитано, но есть опечатка. Пишется: <b>' + esc(it.answer || (it.card && it.card.en) || '') + '</b>'
+        : r.ok ? '✅ Верно!' : '❌ Верный ответ: <b>' + esc(it.answer) + '</b>') +
       (!r.ok && r.given ? '<div class="small muted" style="font-weight:400">Ты ответил: ' + esc(r.given) + '</div>' : '') + '</div>';
-    if (!r.ok) h += diagHTML(it.diag);
+    if (!r.ok || r.close) h += diagHTML(it.diag);
     if (it.why) h += '<div class="note" style="margin-top:0">' + esc(it.why) + '</div>';
     if (it.card) h += answerBlock(it.card);
     return h;
